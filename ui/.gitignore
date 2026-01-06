@@ -1,0 +1,26 @@
+test-results/
+node_modules/
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+/dist
+
+# Playwright
+playwright-report/
+blob-report/
+
+# Env (exception: allow committing UI test env file)
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Paraglide
+src/lib/paraglide
+project.inlang/cache/
