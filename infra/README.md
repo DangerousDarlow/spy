@@ -10,7 +10,7 @@
 ### Ubuntu
 
 Install PowerShell using snap.
-```
+```sh
 snap install powershell --classic
 ```
 

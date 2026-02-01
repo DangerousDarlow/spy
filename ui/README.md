@@ -1,38 +1,58 @@
-# sv
+# UI
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Bootstrap
 
-## Creating a project
+Bootstrap using instructions.
+https://www.skeleton.dev/docs/svelte/get-started/installation/sveltekit
 
-If you're seeing this, you've probably already done this step. Congrats!
+Specifically `npx sv create --types ts ui` picking options
 
-```sh
-# create a new project in the current directory
-npx sv create
+- prettier
+- eslint
+- vitest
+    - unit testing
+- playwright
+- tailwindcss
+    - typography
+    - forms
+- sveltekit-adapter
+    - static
+- devtools-json
+- paraglide
+    - en-gb
+    - demo
+- pnpm
 
-# create a new project in my-app
-npx sv create my-app
+Install skeleton package.
+```
+pnpm add -D @skeletonlabs/skeleton @skeletonlabs/skeleton-svelte
+
 ```
 
-## Developing
+Add imports to `/src/routes/layout.css`.
+```
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-svelte';
+@import '@skeletonlabs/skeleton/themes/cerberus';
+```
 
-Once you've created a project and installed dependencies with `pnpm install`, start a development server:
+Add `data-theme` attribute to `/src/app.html`.
+```
+<html data-theme="cerberus">
+    <!-- ... -->
+</html>
+```
 
+## Local Development
+
+Run with
 ```sh
-pnpm dev
-
-# or start the server and open the app in a new browser tab
 pnpm dev -- --open
 ```
 
-## Building
+## Build
 
-To create a production version of your app:
-
+Build production package with
 ```sh
 pnpm build
 ```
-
-You can preview the production build with `pnpm preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
