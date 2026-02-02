@@ -50,9 +50,17 @@ Run with
 pnpm dev -- --open
 ```
 
-## Build
+## Production Preview
 
-Build production package with
+Build & preview production package.
 ```sh
 pnpm build
+pnpm preview
+```
+
+## Production Deployment
+
+Build & deploy production package.
+```powershell
+pwsh ./deploy.ps1 -Environment dev
 ```
