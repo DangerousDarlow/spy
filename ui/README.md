@@ -2,8 +2,7 @@
 
 ## Bootstrap
 
-Bootstrap using instructions.
-https://www.skeleton.dev/docs/svelte/get-started/installation/sveltekit
+Bootstrap using (instructions)[https://www.skeleton.dev/docs/svelte/get-started/installation/sveltekit].
 
 Specifically `npx sv create --types ts ui` picking options
 
