@@ -1,13 +1,3 @@
-<#
-.SYNOPSIS
-Builds the UI and deploys it to an Azure Static Web App.
-
-.DESCRIPTION
-PowerShell 7+ compatible script intended to run on Windows, Linux, and macOS.
-Uses Azure CLI to retrieve the deployment token and the SWA CLI for upload.
-Supports -WhatIf/-Confirm using ShouldProcess for operations that change Azure state.
-#>
-
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium', PositionalBinding = $false)]
 param(
     [Parameter(Mandatory = $true)]
@@ -16,50 +6,11 @@ param(
 
     [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
-    [string]$ParametersFile = '../infra/main.parameters.json',
-
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
-    [string]$OutputPath = 'build'
+    [string]$ParametersFile = './infra/main.parameters.json'
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-
-function Resolve-InputPath {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path,
-
-        [Parameter(Mandatory = $true)]
-        [string]$BasePath
-    )
-
-    $candidate = $Path
-    if (-not [System.IO.Path]::IsPathRooted($candidate)) {
-        $candidate = Join-Path -Path $BasePath -ChildPath $candidate
-    }
-
-    $resolved = Resolve-Path -Path $candidate -ErrorAction Stop
-    return $resolved.Path
-}
-
-function Resolve-PathAllowMissing {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path,
-
-        [Parameter(Mandatory = $true)]
-        [string]$BasePath
-    )
-
-    $candidate = $Path
-    if (-not [System.IO.Path]::IsPathRooted($candidate)) {
-        $candidate = Join-Path -Path $BasePath -ChildPath $candidate
-    }
-
-    return [System.IO.Path]::GetFullPath($candidate)
-}
 
 function Test-CommandAvailable {
     param(
@@ -133,8 +84,6 @@ function Invoke-ExternalCommand {
 }
 
 try {
-    Write-Host 'Starting Azure Static Web App deployment' -ForegroundColor Green
-
     if (-not (Test-CommandAvailable -Name 'pnpm')) {
         throw "pnpm is not installed or not on PATH."
     }
@@ -147,12 +96,7 @@ try {
         throw "Azure CLI ('az') is not installed or not on PATH."
     }
 
-    $scriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
-    $parametersFilePath = Resolve-InputPath -Path $ParametersFile -BasePath $scriptRoot
-    $outputPathResolved = Resolve-PathAllowMissing -Path $OutputPath -BasePath $scriptRoot
-
-    Write-Host "Reading parameters from file: $parametersFilePath" -ForegroundColor Blue
-    $parametersContent = Get-Content -Path $parametersFilePath -Raw -ErrorAction Stop | ConvertFrom-Json
+    $parametersContent = Get-Content -Path $ParametersFile -Raw -ErrorAction Stop | ConvertFrom-Json
     $name = $parametersContent.parameters.name.value
     $location = $parametersContent.parameters.location.value
 
@@ -168,29 +112,52 @@ try {
     $staticWebAppName = "$baseName-swa"
     $resourceGroupName = "rg-$name-$Environment"
 
+    $uiRoot = (Resolve-Path 'ui').Path
+    $uiOutputPath = Join-Path $uiRoot 'build'
+    $apiRoot = (Resolve-Path 'api').Path
+    $apiOutputPath = Join-Path $apiRoot 'publish'
+
     Write-Host "Environment: $Environment" -ForegroundColor Blue
-    Write-Host "Static Web App Name (expected): $staticWebAppName" -ForegroundColor Blue
+    Write-Host "Static Web App Name: $staticWebAppName" -ForegroundColor Blue
     Write-Host "Resource Group Name: $resourceGroupName" -ForegroundColor Blue
     Write-Host "Resource Group Location: $location" -ForegroundColor Blue
-    Write-Host "Web Application Output Path: $outputPathResolved" -ForegroundColor Blue
+    Write-Host "UI output path: $uiOutputPath" -ForegroundColor Blue
+    Write-Host "API output path: $apiOutputPath" -ForegroundColor Blue
 
-    # Confirm login (read-only)
+    # Check Azure CLI login by attempting to get the current account ID
     try {
         $null = Invoke-AzCli -Arguments @('account', 'show', '--query', 'id', '-o', 'tsv', '--only-show-errors')
     } catch {
         throw "Not logged in to Azure. Run 'az login' and try again. Details: $($_.Exception.Message)"
     }
 
-    Write-Host 'Building UI...' -ForegroundColor Blue
-    Push-Location -Path $scriptRoot
+    Write-Host 'Building ui...' -ForegroundColor Blue
+    Push-Location $uiRoot
+
     try {
+        Remove-Item -Path $uiOutputPath -Recurse -Force
+
+        # The default build output directory is `build`. This can be changed by specifying adapter options in `svelte.config.js`.
         Invoke-ExternalCommand -Name 'pnpm' -Arguments @('build')
     } finally {
         Pop-Location
     }
 
-    if (-not (Test-Path -Path $outputPathResolved)) {
-        throw "Build output path not found: $outputPathResolved"
+    if (-not (Test-Path -Path $uiOutputPath)) {
+        throw "ui build output path not found: $uiOutputPath"
+    }
+
+    Write-Host 'Building api...' -ForegroundColor Blue
+    Push-Location $apiRoot
+    try {
+        Remove-Item -Path $apiOutputPath -Recurse -Force
+        Invoke-ExternalCommand -Name 'dotnet' -Arguments @('publish', 'api.csproj', '-c', 'Release', '-o', $apiOutputPath)
+    } finally {
+        Pop-Location
+    }
+
+    if (-not (Test-Path -Path $apiOutputPath)) {
+        throw "api build output path not found: $apiOutputPath"
     }
 
     Write-Host 'Retrieving deployment token...' -ForegroundColor Blue
@@ -207,21 +174,26 @@ try {
         throw 'Deployment token not returned. Ensure the Static Web App exists and you have access.'
     }
 
-    if ($PSCmdlet.ShouldProcess("Static Web App '$staticWebAppName'", "Deploy '$outputPathResolved'")) {
-        Write-Host 'Deploying build output to Azure Static Web App...' -ForegroundColor Blue
+    if ($PSCmdlet.ShouldProcess("Static Web App '$staticWebAppName' ui & api", "Deploy")) {
+        Write-Host 'Deploying ui and api...' -ForegroundColor Blue
 
         $deployArgs = @(
             '--yes',
             '@azure/static-web-apps-cli',
             'deploy',
-            $outputPathResolved,
+            $uiOutputPath,
             '--api-location',
-            '/home/nick/github/spy/ui/api-publish',
+            $apiOutputPath,
+            '--api-language',
+            'dotnetisolated',
+            '--api-version',
+            '9.0',
             '--deployment-token',
             $deploymentToken,
             '--env',
             'production'
         )
+
         if ($VerbosePreference -eq 'Continue') {
             $deployArgs += '--verbose'
         }
@@ -229,10 +201,8 @@ try {
         Invoke-ExternalCommand -Name 'npx' -Arguments $deployArgs
         Write-Host 'Deployment completed successfully' -ForegroundColor Green
     } else {
-        Write-Host "WhatIf: Would deploy '$outputPathResolved' to '$staticWebAppName'." -ForegroundColor Yellow
+        Write-Host "WhatIf: Would deploy ui from '$uiOutputPath' and api from '$apiOutputPath' to '$staticWebAppName'." -ForegroundColor Yellow
     }
-
-    Write-Host 'Azure Static Web App deployment completed' -ForegroundColor Green
 } catch {
     Write-Error $_.Exception.Message
     exit 1
