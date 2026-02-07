@@ -5,3 +5,9 @@
 @import '@skeletonlabs/skeleton'; 
 @import '@skeletonlabs/skeleton-svelte'; 
 @import '@skeletonlabs/skeleton/themes/cerberus';
+
+@layer base {
+	h1 {
+		@apply text-2xl font-bold tracking-tight;
+	}
+}
