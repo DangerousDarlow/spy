@@ -172,6 +172,7 @@ try {
     Write-Host "Static Web App Name (expected): $staticWebAppName" -ForegroundColor Blue
     Write-Host "Resource Group Name: $resourceGroupName" -ForegroundColor Blue
     Write-Host "Resource Group Location: $location" -ForegroundColor Blue
+    Write-Host "Web Application Output Path: $outputPathResolved" -ForegroundColor Blue
 
     # Confirm login (read-only)
     try {
@@ -214,6 +215,8 @@ try {
             '@azure/static-web-apps-cli',
             'deploy',
             $outputPathResolved,
+            '--api-location',
+            '/home/nick/github/spy/ui/api-publish',
             '--deployment-token',
             $deploymentToken,
             '--env',
