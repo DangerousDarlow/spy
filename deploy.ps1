@@ -135,7 +135,7 @@ try {
     Push-Location $uiRoot
 
     try {
-        Remove-Item -Path $uiOutputPath -Recurse -Force
+        $null = Remove-Item -Path $uiOutputPath -Recurse -Force -ErrorAction SilentlyContinue 
 
         # The default build output directory is `build`. This can be changed by specifying adapter options in `svelte.config.js`.
         Invoke-ExternalCommand -Name 'pnpm' -Arguments @('build')
@@ -150,7 +150,7 @@ try {
     Write-Host 'Building api...' -ForegroundColor Blue
     Push-Location $apiRoot
     try {
-        Remove-Item -Path $apiOutputPath -Recurse -Force
+        $null = Remove-Item -Path $apiOutputPath -Recurse -Force -ErrorAction SilentlyContinue
         Invoke-ExternalCommand -Name 'dotnet' -Arguments @('publish', 'api.csproj', '-c', 'Release', '-o', $apiOutputPath)
     } finally {
         Pop-Location
