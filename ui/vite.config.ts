@@ -12,6 +12,14 @@ export default defineConfig({
 		devtoolsJson(),
 		paraglideVitePlugin({ project: './project.inlang', outdir: './src/lib/paraglide' })
 	],
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:7071',
+				changeOrigin: true
+			}
+		}
+	},
 
 	test: {
 		expect: { requireAssertions: true },
