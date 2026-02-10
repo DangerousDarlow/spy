@@ -13,12 +13,14 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="mx-auto flex max-w-screen-2xl flex-col p-4">
+<div class="flex w-full flex-col p-4">
 	<header class="sticky top-0 z-10 mb-4">
 		<Header />
 	</header>
 
-	{@render children()}
+	<main class="flex">
+		{@render children()}
+	</main>
 </div>
 
 <div style="display:none">

@@ -7,6 +7,19 @@
 @plugin '@tailwindcss/typography';
 
 @layer base {
+	html,
+	body {
+		@apply h-full;
+		@apply w-full;
+		@apply m-0;
+	}
+
+	body {
+	}
+
+	#root {
+	}
+
 	h1 {
 		@apply text-2xl font-bold tracking-tight;
 	}
