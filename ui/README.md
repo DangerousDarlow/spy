@@ -61,11 +61,3 @@ Build & preview production package.
 pnpm build
 pnpm preview
 ```
-
-## Production Deployment
-
-Build & deploy production package.
-
-```powershell
-pwsh ./deploy.ps1 -Environment dev
-```
