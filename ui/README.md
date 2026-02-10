@@ -9,26 +9,28 @@ Specifically `npx sv create --types ts ui` picking options
 - prettier
 - eslint
 - vitest
-    - unit testing
+  - unit testing
 - playwright
 - tailwindcss
-    - typography
-    - forms
+  - typography
+  - forms
 - sveltekit-adapter
-    - static
+  - static
 - devtools-json
 - paraglide
-    - en-gb
-    - demo
+  - en-gb
+  - demo
 - pnpm
 
 Install skeleton package.
+
 ```
 pnpm add -D @skeletonlabs/skeleton @skeletonlabs/skeleton-svelte
 
 ```
 
 Add imports to `/src/routes/layout.css`.
+
 ```
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-svelte';
@@ -36,6 +38,7 @@ Add imports to `/src/routes/layout.css`.
 ```
 
 Add `data-theme` attribute to `/src/app.html`.
+
 ```
 <html data-theme="cerberus">
     <!-- ... -->
@@ -45,6 +48,7 @@ Add `data-theme` attribute to `/src/app.html`.
 ## Local Development
 
 Run with
+
 ```sh
 pnpm dev -- --open
 ```
@@ -52,6 +56,7 @@ pnpm dev -- --open
 ## Production Preview
 
 Build & preview production package.
+
 ```sh
 pnpm build
 pnpm preview
@@ -60,6 +65,7 @@ pnpm preview
 ## Production Deployment
 
 Build & deploy production package.
+
 ```powershell
 pwsh ./deploy.ps1 -Environment dev
 ```

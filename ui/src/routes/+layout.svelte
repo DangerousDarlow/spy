@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
@@ -12,7 +13,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex flex-col p-4 max-w-screen-2xl mx-auto">
+<div class="mx-auto flex max-w-screen-2xl flex-col p-4">
 	<header class="sticky top-0 z-10 mb-4">
 		<Header />
 	</header>
@@ -21,8 +22,8 @@
 </div>
 
 <div style="display:none">
-	{#each locales as locale}
-		<a href={localizeHref(page.url.pathname, { locale })}>
+	{#each locales as locale (locale)}
+		<a href={resolve(localizeHref(page.url.pathname, { locale }))}>
 			{locale}
 		</a>
 	{/each}

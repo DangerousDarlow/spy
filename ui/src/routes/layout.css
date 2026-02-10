@@ -7,7 +7,7 @@
 @plugin '@tailwindcss/typography';
 
 @layer base {
-    h1 {
-        @apply text-2xl font-bold tracking-tight;
-    }
+	h1 {
+		@apply text-2xl font-bold tracking-tight;
+	}
 }
