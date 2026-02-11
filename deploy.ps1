@@ -5,10 +5,6 @@ param(
     [string]$Environment,
 
     [Parameter(Mandatory = $false)]
-    [ValidateSet('Ui', 'Api', 'Both')]
-    [string]$Component = 'Both',
-
-    [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
     [string]$ParametersFile = './infra/main.parameters.json'
 )
@@ -120,11 +116,8 @@ try {
     $uiOutputPath = Join-Path $uiRoot 'build'
     $apiRoot = (Resolve-Path 'api').Path
     $apiOutputPath = Join-Path $apiRoot 'publish'
-    $deployUi = $Component -in @('Ui', 'Both')
-    $deployApi = $Component -in @('Api', 'Both')
 
     Write-Host "Environment: $Environment" -ForegroundColor Blue
-    Write-Host "Component: $Component" -ForegroundColor Blue
     Write-Host "Static Web App Name: $staticWebAppName" -ForegroundColor Blue
     Write-Host "Resource Group Name: $resourceGroupName" -ForegroundColor Blue
     Write-Host "Resource Group Location: $location" -ForegroundColor Blue
@@ -138,37 +131,33 @@ try {
         throw "Not logged in to Azure. Run 'az login' and try again. Details: $($_.Exception.Message)"
     }
 
-    if ($deployUi) {
-        Write-Host 'Building ui...' -ForegroundColor Blue
-        Push-Location $uiRoot
+    Write-Host 'Building ui...' -ForegroundColor Blue
+    Push-Location $uiRoot
 
-        try {
-            $null = Remove-Item -Path $uiOutputPath -Recurse -Force -ErrorAction SilentlyContinue
+    try {
+        $null = Remove-Item -Path $uiOutputPath -Recurse -Force -ErrorAction SilentlyContinue 
 
-            # The default build output directory is `build`. This can be changed by specifying adapter options in `svelte.config.js`.
-            Invoke-ExternalCommand -Name 'pnpm' -Arguments @('build')
-        } finally {
-            Pop-Location
-        }
-
-        if (-not (Test-Path -Path $uiOutputPath)) {
-            throw "ui build output path not found: $uiOutputPath"
-        }
+        # The default build output directory is `build`. This can be changed by specifying adapter options in `svelte.config.js`.
+        Invoke-ExternalCommand -Name 'pnpm' -Arguments @('build')
+    } finally {
+        Pop-Location
     }
 
-    if ($deployApi) {
-        Write-Host 'Building api...' -ForegroundColor Blue
-        Push-Location $apiRoot
-        try {
-            $null = Remove-Item -Path $apiOutputPath -Recurse -Force -ErrorAction SilentlyContinue
-            Invoke-ExternalCommand -Name 'dotnet' -Arguments @('publish', 'api.csproj', '-c', 'Release', '-o', $apiOutputPath)
-        } finally {
-            Pop-Location
-        }
+    if (-not (Test-Path -Path $uiOutputPath)) {
+        throw "ui build output path not found: $uiOutputPath"
+    }
 
-        if (-not (Test-Path -Path $apiOutputPath)) {
-            throw "api build output path not found: $apiOutputPath"
-        }
+    Write-Host 'Building api...' -ForegroundColor Blue
+    Push-Location $apiRoot
+    try {
+        $null = Remove-Item -Path $apiOutputPath -Recurse -Force -ErrorAction SilentlyContinue
+        Invoke-ExternalCommand -Name 'dotnet' -Arguments @('publish', 'api.csproj', '-c', 'Release', '-o', $apiOutputPath)
+    } finally {
+        Pop-Location
+    }
+
+    if (-not (Test-Path -Path $apiOutputPath)) {
+        throw "api build output path not found: $apiOutputPath"
     }
 
     Write-Host 'Retrieving deployment token...' -ForegroundColor Blue
@@ -185,42 +174,25 @@ try {
         throw 'Deployment token not returned. Ensure the Static Web App exists and you have access.'
     }
 
-    if (-not $deployUi -and -not (Test-Path -Path $uiOutputPath)) {
-        throw "UI build output path not found for deployment: $uiOutputPath. Use -Component Ui or -Component Both to build it."
-    }
-
-    $deploymentLabel = if ($deployUi -and $deployApi) {
-        'ui & api'
-    } elseif ($deployUi) {
-        'ui'
-    } else {
-        'api'
-    }
-
-    if ($PSCmdlet.ShouldProcess("Static Web App '$staticWebAppName' $deploymentLabel", "Deploy")) {
-        Write-Host "Deploying $deploymentLabel..." -ForegroundColor Blue
+    if ($PSCmdlet.ShouldProcess("Static Web App '$staticWebAppName' ui & api", "Deploy")) {
+        Write-Host 'Deploying ui and api...' -ForegroundColor Blue
 
         $deployArgs = @(
             '--yes',
             '@azure/static-web-apps-cli',
             'deploy',
             $uiOutputPath,
+            '--api-location',
+            $apiOutputPath,
+            '--api-language',
+            'dotnetisolated',
+            '--api-version',
+            '9.0',
             '--deployment-token',
             $deploymentToken,
             '--env',
             'production'
         )
-
-        if ($deployApi) {
-            $deployArgs += @(
-                '--api-location',
-                $apiOutputPath,
-                '--api-language',
-                'dotnetisolated',
-                '--api-version',
-                '9.0'
-            )
-        }
 
         if ($VerbosePreference -eq 'Continue') {
             $deployArgs += '--verbose'
@@ -229,14 +201,7 @@ try {
         Invoke-ExternalCommand -Name 'npx' -Arguments $deployArgs
         Write-Host 'Deployment completed successfully' -ForegroundColor Green
     } else {
-        $whatIfMessage = if ($deployUi -and $deployApi) {
-            "WhatIf: Would deploy ui from '$uiOutputPath' and api from '$apiOutputPath' to '$staticWebAppName'."
-        } elseif ($deployUi) {
-            "WhatIf: Would deploy ui from '$uiOutputPath' to '$staticWebAppName'."
-        } else {
-            "WhatIf: Would deploy api from '$apiOutputPath' to '$staticWebAppName'."
-        }
-        Write-Host $whatIfMessage -ForegroundColor Yellow
+        Write-Host "WhatIf: Would deploy ui from '$uiOutputPath' and api from '$apiOutputPath' to '$staticWebAppName'." -ForegroundColor Yellow
     }
 } catch {
     Write-Error $_.Exception.Message
