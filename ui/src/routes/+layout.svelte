@@ -5,6 +5,7 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Header from '../components/Header.svelte';
+	import Footer from '../components/Footer.svelte';
 
 	let { children } = $props();
 </script>
@@ -21,6 +22,10 @@
 	<main class="flex">
 		{@render children()}
 	</main>
+
+	<footer class="fixed right-0 bottom-0 left-0 z-10 mt-4 p-4">
+		<Footer />
+	</footer>
 </div>
 
 <div style="display:none">

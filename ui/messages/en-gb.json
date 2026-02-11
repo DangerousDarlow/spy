@@ -2,5 +2,6 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"application_name": "Spy",
 	"empty_content": "nothing to see here",
+	"user_button_aria_label": "Edit user",
 	"hello_world": "Hello, {name} from en-gb!"
 }

@@ -12,6 +12,7 @@
 		@apply h-full;
 		@apply w-full;
 		@apply m-0;
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	body {
