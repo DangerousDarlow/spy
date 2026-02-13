@@ -19,7 +19,7 @@
 		<Header />
 	</header>
 
-	<main class="flex">
+	<main class="flex w-full">
 		{@render children()}
 	</main>
 

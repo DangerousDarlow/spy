@@ -3,5 +3,9 @@
 	"application_name": "Spy",
 	"empty_content": "nothing to see here",
 	"user_button_aria_label": "Edit user",
-	"hello_world": "Hello, {name} from en-gb!"
+	"double_text": "Congratulations! You have found the secret endpoint used to demonstrate the managed Azure functions api.",
+	"double_button_label": "Number",
+	"double_button_placeholder": "Enter a number",
+	"double_button_text": "Double It",
+	"double_button_text_in_progress": "Doubling..."
 }

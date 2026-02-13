@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '$lib/paraglide/messages.js';
+
 	let value = '';
 	let isLoading = false;
 	let errorMessage = '';
@@ -28,27 +30,33 @@
 	}
 </script>
 
-<div class="mx-auto max-w-md space-y-4 p-6">
-	<h1>Double</h1>
-	<label class="block text-sm font-medium text-slate-700" for="double-input">Number</label>
-	<input
-		id="double-input"
-		class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base text-slate-900 shadow-sm ring-offset-2 transition outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-400 disabled:bg-slate-100"
-		type="number"
-		inputmode="numeric"
-		bind:value
-		placeholder="Enter a number"
-		disabled={isLoading}
-	/>
-	<button
-		class="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-400"
-		type="button"
-		on:click={handleDouble}
-		disabled={isLoading}
-	>
-		{isLoading ? 'Doubling...' : 'Double It'}
-	</button>
-	{#if errorMessage}
-		<p class="text-sm text-red-600">{errorMessage}</p>
-	{/if}
+<div class="flex w-full flex-row justify-center">
+	<div class="flex flex-col space-y-4">
+		<p>{m.double_text()}</p>
+
+		<label class="label">
+			<span class="label-text">{m.double_button_label()}</span>
+			<input
+				id="double-input"
+				class="input"
+				inputmode="numeric"
+				bind:value
+				placeholder={m.double_button_placeholder()}
+				disabled={isLoading}
+			/>
+		</label>
+
+		<button
+			class="btn w-full rounded-md preset-filled-primary-500"
+			type="button"
+			on:click={handleDouble}
+			disabled={isLoading}
+		>
+			{isLoading ? m.double_button_text_in_progress() : m.double_button_text()}
+		</button>
+
+		{#if errorMessage}
+			<p class="text-sm text-error-500">{errorMessage}</p>
+		{/if}
+	</div>
 </div>
