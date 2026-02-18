@@ -1,11 +1,4 @@
 <script lang="ts">
-	declare global {
-		interface Window {
-			__TANSTACK_QUERY_CLIENT__:
-				import("@tanstack/query-core").QueryClient;
-		}
-	}
-
 	import './layout.css';
 	import Footer from '../components/Footer.svelte';
 	import Header from '../components/Header.svelte';

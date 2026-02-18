@@ -42,14 +42,14 @@
 		<button
 			class="btn w-full rounded-md preset-filled-primary-500"
 			type="button"
-			on:click={() => mutation.mutateAsync(value)}
+			on:click={async () => await mutation.mutateAsync(value)}
 			disabled={mutation.isPending}
 		>
 			{mutation.isPending ? m.double_button_text_in_progress() : m.double_button_text()}
 		</button>
 
 		{#if mutation.isError}
-			<p class="text-sm text-error-500">{mutation.error}</p>
+			<p class="text-sm text-error-500">{mutation.error?.message}</p>
 		{/if}
 	</div>
 </div>
