@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { UserRoundPen } from 'lucide-svelte';
+	import { Settings } from 'lucide-svelte';
 	import { m } from '$lib/paraglide/messages.js';
 
 	let isToggled = false;
@@ -7,10 +7,10 @@
 
 <button
 	aria-label={m.user_button_aria_label()}
-	class={`flex gap-2 rounded-full bg-primary-500 p-3 text-gray-50 ${isToggled && 'rounded-lg'}`}
+	class="btn rounded-full preset-filled-primary-500 p-4"
 	on:click={() => {
 		isToggled = !isToggled;
 	}}
 >
-	<UserRoundPen size={40} />
+	<Settings size={40} />
 </button>

@@ -40,7 +40,7 @@
 		</label>
 
 		<button
-			class="btn w-full rounded-md preset-filled-primary-500"
+			class="btn w-full preset-filled-primary-500"
 			type="button"
 			on:click={async () => await mutation.mutateAsync(value)}
 			disabled={mutation.isPending}
