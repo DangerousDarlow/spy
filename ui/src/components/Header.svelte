@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { HatGlasses } from 'lucide-svelte';
 	import { m } from '$lib/paraglide/messages.js';
 </script>

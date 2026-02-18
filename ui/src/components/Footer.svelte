@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import UserButton from './UserButton.svelte';
 </script>
 

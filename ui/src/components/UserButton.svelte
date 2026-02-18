@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { UserRoundPen } from 'lucide-svelte';
 	import { m } from '$lib/paraglide/messages.js';
 
