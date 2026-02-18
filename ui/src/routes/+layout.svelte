@@ -7,7 +7,6 @@
 	import { browser } from '$app/environment';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
 
 	let { children } = $props();
 
@@ -46,7 +45,8 @@
 
 <div style="display:none">
 	{#each locales as locale (locale)}
-		<a href={resolve(localizeHref(page.url.pathname, { locale }))}>
+		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+		<a href={localizeHref(page.url.pathname, { locale })}>
 			{locale}
 		</a>
 	{/each}
