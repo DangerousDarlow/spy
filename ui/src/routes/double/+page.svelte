@@ -1,33 +1,26 @@
 <script lang="ts">
+	import { createMutation } from '@tanstack/svelte-query';
 	import { m } from '$lib/paraglide/messages.js';
 
+	const postDouble = async (value: string) => {
+		const numericValue = Number(value);
+		const response = await fetch('/api/double', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ value: numericValue })
+		});
+
+		if (!response.ok) throw new Error('Failed to double value');
+		const data = await response.json();
+		return data.value ?? 0;
+	};
+
+	const mutation = createMutation(() => ({
+		mutationFn: postDouble,
+		onSuccess: (data) => (value = data)
+	}));
+
 	let value = '';
-	let isLoading = false;
-	let errorMessage = '';
-
-	async function handleDouble() {
-		errorMessage = '';
-		isLoading = true;
-		try {
-			const numericValue = Number(value);
-			const response = await fetch('/api/double', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ value: Number.isFinite(numericValue) ? numericValue : 0 })
-			});
-
-			if (!response.ok) {
-				throw new Error(`Request failed (${response.status})`);
-			}
-
-			const data: { value?: number } = await response.json();
-			value = String(data.value ?? 0);
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'Something went wrong.';
-		} finally {
-			isLoading = false;
-		}
-	}
 </script>
 
 <div class="flex w-full flex-row justify-center">
@@ -42,21 +35,21 @@
 				inputmode="numeric"
 				bind:value
 				placeholder={m.double_button_placeholder()}
-				disabled={isLoading}
+				disabled={mutation.isPending}
 			/>
 		</label>
 
 		<button
 			class="btn w-full rounded-md preset-filled-primary-500"
 			type="button"
-			on:click={handleDouble}
-			disabled={isLoading}
+			on:click={() => mutation.mutateAsync(value)}
+			disabled={mutation.isPending}
 		>
-			{isLoading ? m.double_button_text_in_progress() : m.double_button_text()}
+			{mutation.isPending ? m.double_button_text_in_progress() : m.double_button_text()}
 		</button>
 
-		{#if errorMessage}
-			<p class="text-sm text-error-500">{errorMessage}</p>
+		{#if mutation.isError}
+			<p class="text-sm text-error-500">{mutation.error}</p>
 		{/if}
 	</div>
 </div>
