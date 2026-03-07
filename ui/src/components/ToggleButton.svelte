@@ -20,6 +20,6 @@
 	};
 </script>
 
-<button class="btn rounded-full preset-filled-primary-500 p-4" onclick={clicked}>
+<button class="toggle-button btn rounded-full preset-filled-primary-500 p-4" onclick={clicked}>
 	<IconComponent {size} />
 </button>
