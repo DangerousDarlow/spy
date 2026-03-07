@@ -16,12 +16,14 @@
 
 {#if open}
 	<div class="absolute inset-0 z-10 flex flex-col justify-end">
-		<div class="backdrop bg-inactive flex-1 bg-gray-900/50" onclick={close} aria-hidden="true"></div>
+		<div
+			class="backdrop bg-inactive flex-1 bg-gray-900/50"
+			onclick={close}
+			aria-hidden="true"
+		></div>
 
 		<div
 			class="popup z-20 w-full transform p-4"
-			in:fly={{ y: 300, duration: 300 }}
-			out:fly={{ y: 300, duration: 300 }}
 			onclick={() => {
 				if (closeOnClick) close();
 			}}
