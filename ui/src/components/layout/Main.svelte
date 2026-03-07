@@ -6,6 +6,6 @@
 	let { children }: Props = $props();
 </script>
 
-<main class="relative flex w-full flex-1">
+<main class="relative flex w-full flex-1 p-4">
 	{@render children?.()}
 </main>
