@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
-
 	interface Props {
 		open: boolean;
 		closeOnClick?: boolean;
