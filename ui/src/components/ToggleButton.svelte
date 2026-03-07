@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon } from 'lucide-svelte';
+	import { m } from '$lib/paraglide/messages.js';
 
 	interface Props {
 		toggled: boolean;
@@ -20,6 +21,10 @@
 	};
 </script>
 
-<button class="toggle-button btn rounded-full preset-filled-primary-500 p-4" onclick={clicked}>
+<button
+	class="toggle-button btn rounded-full preset-filled-primary-500 p-4"
+	aria-label={m.settings_button_aria_label()}
+	onclick={clicked}
+>
 	<IconComponent {size} />
 </button>

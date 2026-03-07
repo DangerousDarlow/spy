@@ -5,10 +5,11 @@
 	import Header from '../components/layout/Header.svelte';
 	import Layout from '../components/layout/Layout.svelte';
 	import Main from '../components/layout/Main.svelte';
+	import Settings from '../components/Settings.svelte';
 	import ToggleButton from '../components/ToggleButton.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-	import { Settings } from 'lucide-svelte';
+	import { Settings as SettingsIcon } from 'lucide-svelte';
 	import { browser } from '$app/environment';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/state';
@@ -42,12 +43,12 @@
 			{@render children?.()}
 
 			<BottomPopUp bind:open={settingsOpen}>
-				<p>hello</p>
+				<Settings />
 			</BottomPopUp>
 		</Main>
 
 		<Footer>
-			<ToggleButton bind:toggled={settingsOpen} icon={Settings} />
+			<ToggleButton bind:toggled={settingsOpen} icon={SettingsIcon} />
 		</Footer>
 	</Layout>
 </QueryClientProvider>
