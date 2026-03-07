@@ -8,7 +8,18 @@ type Settings = {
 };
 
 function createDefaultSettings(): Settings {
-	return { user: { id: crypto.randomUUID(), name: '' } };
+	return { user: { id: createUserId(), name: '' } };
+}
+
+function createUserId(): string {
+	// crypto.randomUUID is only available in secure environments. It is not available when connecting to a local
+	// http address such as a local build from a network device like my phone. http://localhost is treated as secure.
+	const maybeRandomUUID = globalThis.crypto?.randomUUID;
+	if (typeof maybeRandomUUID === 'function') {
+		return maybeRandomUUID.call(globalThis.crypto);
+	}
+
+	return `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 const SETTINGS_STORAGE_KEY = 'settings';
