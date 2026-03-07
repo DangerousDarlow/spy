@@ -2,12 +2,11 @@
 	import { createMutation } from '@tanstack/svelte-query';
 	import { m } from '$lib/paraglide/messages.js';
 
-	const postDouble = async (value: string) => {
-		const numericValue = Number(value);
+	const postDouble = async (value: number) => {
 		const response = await fetch('/api/double', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ value: numericValue })
+			body: JSON.stringify({ value })
 		});
 
 		if (!response.ok) throw new Error('Failed to double value');
@@ -42,7 +41,7 @@
 		<button
 			class="btn w-full preset-filled-primary-500"
 			type="button"
-			on:click={async () => await mutation.mutateAsync(value)}
+			on:click={async () => await mutation.mutateAsync(Number(value))}
 			disabled={mutation.isPending}
 		>
 			{mutation.isPending ? m.double_button_text_in_progress() : m.double_button_text()}
