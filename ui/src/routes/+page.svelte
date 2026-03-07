@@ -1,5 +1,5 @@
 <script>
-	import EmptyContent from '../components/EmptyContent.svelte';
+	import EmptyContent from '../EmptyContent.svelte';
 </script>
 
 <EmptyContent />

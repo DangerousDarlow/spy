@@ -1,12 +1,12 @@
 <script lang="ts">
 	import './layout.css';
-	import BottomPopUp from '../components/layout/BottomPopUp.svelte';
-	import Footer from '../components/layout/Footer.svelte';
-	import Header from '../components/layout/Header.svelte';
-	import Layout from '../components/layout/Layout.svelte';
-	import Main from '../components/layout/Main.svelte';
-	import Settings from '../components/Settings.svelte';
-	import ToggleButton from '../components/ToggleButton.svelte';
+	import BottomPopUp from '../layout/BottomPopUp.svelte';
+	import Footer from '../layout/Footer.svelte';
+	import Header from '../layout/Header.svelte';
+	import Layout from '../layout/Layout.svelte';
+	import Main from '../layout/Main.svelte';
+	import Settings from '../settings/Settings.svelte';
+	import ToggleButton from '../layout/ToggleButton.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { Settings as SettingsIcon } from 'lucide-svelte';
