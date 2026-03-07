@@ -1,12 +1,14 @@
 <script lang="ts">
 	import './layout.css';
-	import Footer from '../components/Footer.svelte';
 	import Header from '../components/Header.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { browser } from '$app/environment';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/state';
+	import { Settings } from 'lucide-svelte';
+	import ToggleButton from '../components/ToggleButton.svelte';
+	import BottomPopUp from '../components/BottomPopUp.svelte';
 
 	let { children } = $props();
 
@@ -21,6 +23,8 @@
 	if (browser) {
 		window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 	}
+
+	let settingsOpen = $state(false);
 </script>
 
 <svelte:head>
@@ -28,17 +32,21 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<div class="flex w-full flex-col p-4">
-		<header class="sticky top-0 z-10 mb-4">
+	<div class="layout flex min-h-screen w-full flex-col">
+		<header class="sticky top-0 z-10 p-4">
 			<Header />
 		</header>
 
-		<main class="flex w-full">
+		<main class="relative flex w-full flex-1">
 			{@render children()}
+
+			<BottomPopUp bind:open={settingsOpen}>
+				<p>hello</p>
+			</BottomPopUp>
 		</main>
 
-		<footer class="fixed right-0 bottom-0 left-0 z-10 mt-4 p-4">
-			<Footer />
+		<footer class="z-30 p-4 flex h-full items-center justify-center gap-2">
+				<ToggleButton bind:toggled={settingsOpen} icon={Settings} />
 		</footer>
 	</div>
 </QueryClientProvider>
