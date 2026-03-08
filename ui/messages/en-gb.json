@@ -3,6 +3,7 @@
 	"application_name": "Spy",
 	"empty_content": "nothing to see here",
 	"settings_button_aria_label": "Edit settings",
+	"settings_id_label": "Id",
 	"settings_name_label": "Name",
 	"settings_name_placeholder": "Your name",
 	"double_text": "Congratulations! You have found the secret endpoint used to demonstrate the managed Azure functions api.",
