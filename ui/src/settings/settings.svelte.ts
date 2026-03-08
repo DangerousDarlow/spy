@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { getUuid } from '$lib';
 
 type Settings = {
 	user: {
@@ -8,18 +9,7 @@ type Settings = {
 };
 
 function createDefaultSettings(): Settings {
-	return { user: { id: createUserId(), name: '' } };
-}
-
-function createUserId(): string {
-	// crypto.randomUUID is only available in secure environments. It is not available when connecting to a local
-	// http address such as a local build from a network device like my phone. http://localhost is treated as secure.
-	const maybeRandomUUID = globalThis.crypto?.randomUUID;
-	if (typeof maybeRandomUUID === 'function') {
-		return maybeRandomUUID.call(globalThis.crypto);
-	}
-
-	return `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+	return { user: { id: getUuid(), name: '' } };
 }
 
 const SETTINGS_STORAGE_KEY = 'settings';
