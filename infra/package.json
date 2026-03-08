@@ -1,0 +1,7 @@
+{
+	"type": "module",
+	"devDependencies": {
+		"@azure/static-web-apps-cli": "^2.0.8",
+		"@types/node": "^25.3.5"
+	}
+}
