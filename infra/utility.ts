@@ -140,3 +140,32 @@ export function createDeploymentName(deploymentTarget: string): string {
 
   return `deployment-${deploymentTarget}-${yyyy}${MM}${dd}-${HH}${mm}${ss}`;
 }
+
+export function getStaticWebAppDeploymentToken(
+  staticWebAppName: string,
+  resourceGroupName: string,
+): string {
+  const output = runCommand(
+    `az staticwebapp secrets list --name ${staticWebAppName} --resource-group ${resourceGroupName} --query properties.apiKey -o tsv --only-show-errors`,
+    "Failed to get deployment token. Ensure the Static Web App exists and you have access to it.",
+  );
+
+  const deploymentToken = output.trim();
+  if (!deploymentToken) {
+    logError(
+      "Azure CLI returned an empty deployment token. Ensure the Static Web App exists and you have access to it.",
+    );
+    process.exit(1);
+  }
+
+  return deploymentToken;
+}
+
+export function deployAzureStaticWebAppAndFunctions(
+  uiBuildPath: string,
+  apiBuildPath: string,
+  deploymentToken: string,
+): void {
+  const command = `pnpm exec swa deploy ${uiBuildPath} --api-location ${apiBuildPath} --api-language dotnetisolated --api-version 9.0 --deployment-token ${deploymentToken} --env production`;
+  runCommand(command, "Failed to deploy static web app and functions.");
+}
