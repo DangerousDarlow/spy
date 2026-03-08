@@ -4,12 +4,13 @@
 
 - PowerShell
 - Azure CLI
-    - Log in using `az login`
-    - Set subscription id using `az account set --subscription <SUBSCRIPTION_ID>`
+  - Log in using `az login`
+  - Set subscription id using `az account set --subscription <SUBSCRIPTION_ID>`
 
 ### Ubuntu
 
 Install PowerShell using snap.
+
 ```sh
 snap install powershell --classic
 ```
@@ -21,6 +22,7 @@ Azure CLI installation is part of the Ubuntu SystemSetup scripts; https://github
 ## Run
 
 Provision an environment using PowerShell.
+
 ```powershell
 pwsh ./provision.ps1 -Environment dev
 ```

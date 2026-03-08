@@ -2,17 +2,10 @@ import { execSync } from "child_process";
 import { readFileSync } from "fs";
 import { logError, logInfo, logSuccess } from "./log.ts";
 
-const environment = process.argv[2] ?? 'dev';
-
-type ParametersFile = {
-  parameters: {
-    name: { value: string };
-    location: { value: string };
-  };
-};
+const environment = process.argv[2] ?? "dev";
 
 const fileContent = readFileSync("main.parameters.json", "utf-8");
-const parameters = JSON.parse(fileContent) as ParametersFile;
+const parameters = JSON.parse(fileContent);
 
 const name = parameters.parameters.name.value;
 const location = parameters.parameters.location.value;
@@ -34,12 +27,14 @@ function runCommand(command: string, failureMessage: string): string {
 function getSubscriptionId(): string {
   const output = runCommand(
     "az account show --query id -o tsv --only-show-errors",
-    "Failed to get Azure subscription ID. Ensure the Azure CLI is installed and you are logged in."
+    "Failed to get Azure subscription ID. Ensure the Azure CLI is installed and you are logged in.",
   );
 
   const subscriptionId = output.trim();
   if (!subscriptionId) {
-    logError("Azure CLI returned an empty subscription ID. Ensure you are logged in and a default subscription is selected.");
+    logError(
+      "Azure CLI returned an empty subscription ID. Ensure you are logged in and a default subscription is selected.",
+    );
     process.exit(1);
   }
 
@@ -48,7 +43,7 @@ function getSubscriptionId(): string {
 
 const subscriptionId = getSubscriptionId();
 
-logInfo('Provisioning static web application')
+logInfo("Provisioning static web application");
 logInfo(`  Environment: ${environment}`);
 logInfo(`  Base name: ${baseName}`);
 logInfo(`  Static Web App name: ${staticWebAppName}`);
@@ -59,16 +54,16 @@ logInfo(`  Subscription ID: ${subscriptionId}`);
 function checkIfResourceGroupExists(): boolean {
   const output = runCommand(
     `az group exists --name ${resourceGroupName} --only-show-errors`,
-    "Failed to check if the resource group exists."
+    "Failed to check if the resource group exists.",
   );
 
   return output.trim() === "true";
 }
 
 function createResourceGroup(): void {
-   runCommand(
+  runCommand(
     `az group create --name ${resourceGroupName} --location ${location} --only-show-errors`,
-    `Failed to create resource group "${resourceGroupName}".`
+    `Failed to create resource group "${resourceGroupName}".`,
   );
 }
 
@@ -82,7 +77,7 @@ if (!resourceGroupExists) {
 function validateResources(): void {
   runCommand(
     `az deployment group validate --resource-group ${resourceGroupName} --template-file ./main.bicep --parameters ./main.parameters.json --parameters environment=${environment} --only-show-errors`,
-    "Failed to validate resources. Ensure the Bicep files are correct and all parameters are provided."
+    "Failed to validate resources. Ensure the Bicep files are correct and all parameters are provided.",
   );
 }
 
@@ -93,12 +88,12 @@ function createDeploymentName(): string {
   const now = new Date();
 
   const yyyy = now.getFullYear();
-  const MM = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
+  const MM = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
 
-  const HH = String(now.getHours()).padStart(2, '0');
-  const mm = String(now.getMinutes()).padStart(2, '0');
-  const ss = String(now.getSeconds()).padStart(2, '0');
+  const HH = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  const ss = String(now.getSeconds()).padStart(2, "0");
 
   return `deployment-${staticWebAppName}-${yyyy}${MM}${dd}-${HH}${mm}${ss}`;
 }
@@ -106,13 +101,13 @@ function createDeploymentName(): string {
 function deployResources(): string {
   const output = runCommand(
     `az deployment group create --name ${deploymentName} --resource-group ${resourceGroupName} --template-file ./main.bicep --parameters ./main.parameters.json --parameters environment=${environment} --only-show-errors`,
-    "Failed to deploy resources. Ensure the Bicep files are correct and all parameters are provided."
+    "Failed to deploy resources. Ensure the Bicep files are correct and all parameters are provided.",
   );
 
   const json = JSON.parse(output);
   return json.properties.outputs.staticWebAppUrl.value;
 }
-    
+
 const deploymentName = createDeploymentName();
 
 logInfo(`Deploying resources: ${deploymentName}`);
