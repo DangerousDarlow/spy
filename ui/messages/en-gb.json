@@ -1,14 +1,17 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"application_name": "Spy",
-	"empty_content": "nothing to see here",
-	"settings_button_aria_label": "Edit settings",
-	"settings_id_label": "Id",
-	"settings_name_label": "Name",
-	"settings_name_placeholder": "Your name",
-	"double_text": "Congratulations! You have found the secret endpoint used to demonstrate the managed Azure functions api.",
 	"double_button_label": "Number",
 	"double_button_placeholder": "Enter a number",
 	"double_button_text": "Double It",
-	"double_button_text_in_progress": "Doubling..."
+	"double_button_text_in_progress": "Doubling...",
+	"double_text": "Congratulations! You have found the secret endpoint used to demonstrate the managed Azure functions api.",
+	"empty_content": "Nothing to see here",
+	"settings_button_aria_label": "Edit settings",
+	"settings_id_copy": "Copy ID to clipboard",
+	"settings_id_label": "ID",
+	"settings_name_label": "Name",
+	"settings_name_placeholder": "Your name",
+	"settings_random_button_aria_label": "Randomise name and ID",
+	"settings_random_button_text": "Random"
 }
