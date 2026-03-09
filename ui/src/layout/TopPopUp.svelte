@@ -15,7 +15,7 @@
 {#if open}
 	<div class="popup absolute inset-0 z-10 flex flex-col">
 		<div
-			class="content z-20 w-full transform p-4"
+			class="content z-20 w-full transform bg-surface-50-950 p-4"
 			onclick={() => {
 				if (closeOnClick) close();
 			}}
