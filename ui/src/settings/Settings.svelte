@@ -1,12 +1,10 @@
 <script lang="ts">
+	import InputAndButton from '../shared/InputAndButton.svelte';
+	import Labelled from '../shared/Labelled.svelte';
 	import { Copy, Dices } from 'lucide-svelte';
-	import { dev, getUuid, getRandomName } from '$lib';
+	import { dev, getRandomName, getUuid, writeToClipboard } from '$lib';
 	import { m } from '$lib/paraglide/messages.js';
 	import { saveSettingsToLocalStorage, settings } from './settings.svelte.ts';
-
-	async function copyUserIdToClipboard() {
-		await navigator.clipboard.writeText(settings.user.id);
-	}
 
 	function randomiseNameAndId() {
 		settings.user.id = getUuid();
@@ -21,32 +19,27 @@
 
 <div class="settings flex flex-col gap-4">
 	{#if dev}
-		<label for="id" class="label label-text">
-			{m.settings_id_label()}
-		</label>
-
-		<div class="input-group grid-cols-[1fr_auto]">
-			<input id="id" class="input" type="text" readonly value={settings.user.id} />
-			<button
-				id="copy-id"
-				class="ig-button preset-filled-primary-500 px-2"
-				title={m.settings_id_copy()}
-				onclick={copyUserIdToClipboard}
-			>
-				<Copy size={16} />
-			</button>
-		</div>
+		<Labelled id="user-id" label={m.settings_id_label()}>
+			<InputAndButton
+				id="user-id"
+				bind:value={settings.user.id}
+				buttonTitle={m.settings_id_copy()}
+				buttonIcon={Copy}
+				onButtonClick={writeToClipboard}
+				readonly
+			/>
+		</Labelled>
 	{/if}
 
-	<label class="label">
-		<span class="label-text">{m.settings_name_label()}</span>
+	<Labelled id="user-name" label={m.settings_name_label()}>
 		<input
+			id="user-name"
 			class="input"
 			type="text"
 			placeholder={m.settings_name_placeholder()}
 			bind:value={settings.user.name}
 		/>
-	</label>
+	</Labelled>
 
 	{#if dev}
 		<button
