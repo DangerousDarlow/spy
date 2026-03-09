@@ -22,7 +22,7 @@
 </script>
 
 <button
-	class="toggle-button btn rounded-full preset-filled-primary-500 p-4"
+	class="toggle-button btn rounded-full preset-filled-primary-500 p-2"
 	aria-label={m.settings_button_aria_label()}
 	onclick={clicked}
 >

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import './layout.css';
-	import BottomPopUp from '../layout/BottomPopUp.svelte';
-	import Footer from '../layout/Footer.svelte';
 	import Header from '../layout/Header.svelte';
 	import Layout from '../layout/Layout.svelte';
 	import Main from '../layout/Main.svelte';
 	import Settings from '../settings/Settings.svelte';
 	import ToggleButton from '../layout/ToggleButton.svelte';
+	import TopPopUp from '../layout/TopPopUp.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { Settings as SettingsIcon } from 'lucide-svelte';
@@ -37,19 +36,17 @@
 
 <QueryClientProvider client={queryClient}>
 	<Layout>
-		<Header />
+		<Header>
+			<ToggleButton bind:toggled={settingsOpen} icon={SettingsIcon} size={32} />
+		</Header>
 
 		<Main>
 			{@render children?.()}
 
-			<BottomPopUp bind:open={settingsOpen}>
+			<TopPopUp bind:open={settingsOpen}>
 				<Settings />
-			</BottomPopUp>
+			</TopPopUp>
 		</Main>
-
-		<Footer>
-			<ToggleButton bind:toggled={settingsOpen} icon={SettingsIcon} />
-		</Footer>
 	</Layout>
 </QueryClientProvider>
 
