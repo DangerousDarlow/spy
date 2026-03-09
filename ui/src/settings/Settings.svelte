@@ -51,7 +51,7 @@
 	{#if dev}
 		<button
 			class="random-button btn preset-filled-primary-500 p-4"
-			aria-label={m.settings_random_button_aria_label()}
+			title={m.settings_random_button_title()}
 			onclick={randomiseNameAndId}
 		>
 			<Dices size={24} />
