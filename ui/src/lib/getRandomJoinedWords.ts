@@ -1,3 +1,5 @@
+import { getRandomStringsFromArray } from './getRandomStringFromArray';
+
 const WORDS = [
 	'about',
 	'above',
@@ -101,18 +103,7 @@ const WORDS = [
 	'zebra'
 ] as const;
 
-export function getRandomWord(): string {
-	return WORDS[Math.floor(Math.random() * WORDS.length)];
-}
-
-export function getRandomWords(count: number): string {
-	if (count <= 1) return getRandomWord();
-
-	const result: string[] = [];
-
-	for (let i = 0; i < count; i++) {
-		result.push(getRandomWord());
-	}
-
-	return result.join('-');
+export function getRandomJoinedWords(count: number): string {
+	const words = getRandomStringsFromArray(WORDS, count);
+	return words.join('-');
 }

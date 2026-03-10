@@ -1,4 +1,4 @@
-export function getUuid(): string {
+export function getRandomUuid(): string {
 	// crypto.randomUUID is only available in secure environments. It is not available when connecting to a local
 	// http address such as a local build from a network device like my phone. http://localhost is treated as secure.
 	const randomUUID = globalThis.crypto?.randomUUID;

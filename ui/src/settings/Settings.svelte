@@ -2,12 +2,12 @@
 	import InputAndButton from '../shared/InputAndButton.svelte';
 	import Labelled from '../shared/Labelled.svelte';
 	import { Copy } from 'lucide-svelte';
-	import { dev, getRandomName, getUuid, writeToClipboard } from '$lib';
+	import { dev, getRandomName, getRandomUuid, writeToClipboard } from '$lib';
 	import { m } from '$lib/paraglide/messages.js';
 	import { saveSettingsToLocalStorage, settings } from './settings.svelte.ts';
 
 	function randomiseNameAndId() {
-		settings.user.id = getUuid();
+		settings.user.id = getRandomUuid();
 		settings.user.name = getRandomName();
 	}
 
@@ -42,10 +42,7 @@
 	</Labelled>
 
 	{#if dev}
-		<button
-			class="random-button btn preset-filled-primary-500"
-			onclick={randomiseNameAndId}
-		>
+		<button class="random-button btn preset-filled-primary-500" onclick={randomiseNameAndId}>
 			{m.settings_random_button_text()}
 		</button>
 	{/if}

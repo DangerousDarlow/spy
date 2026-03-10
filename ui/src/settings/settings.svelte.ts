@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { getUuid, APP_NAME } from '$lib';
+import { getRandomUuid, APP_NAME } from '$lib';
 
 type Settings = {
 	user: {
@@ -9,7 +9,7 @@ type Settings = {
 };
 
 function createDefaultSettings(): Settings {
-	return { user: { id: getUuid(), name: '' } };
+	return { user: { id: getRandomUuid(), name: '' } };
 }
 
 const SETTINGS_STORAGE_KEY = `${APP_NAME}-settings`;

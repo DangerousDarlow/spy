@@ -2,13 +2,13 @@
 	import InputAndButton from '../shared/InputAndButton.svelte';
 	import Labelled from '../shared/Labelled.svelte';
 	import { Dices } from 'lucide-svelte';
-	import { getRandomWords } from '$lib';
+	import { getRandomJoinedWords } from '$lib';
 	import { m } from '$lib/paraglide/messages';
 
-	let name = $state(getRandomWords(3));
+	let name = $state(getRandomJoinedWords(3));
 
 	function randomiseName() {
-		name = getRandomWords(3);
+		name = getRandomJoinedWords(3);
 	}
 </script>
 

@@ -1,3 +1,5 @@
+import { getRandomStringFromArray } from './getRandomStringFromArray';
+
 const NAMES = [
 	'Alice',
 	'Bob',
@@ -52,5 +54,5 @@ const NAMES = [
 ] as const;
 
 export function getRandomName(): string {
-	return NAMES[Math.floor(Math.random() * NAMES.length)];
+	return getRandomStringFromArray(NAMES);
 }
