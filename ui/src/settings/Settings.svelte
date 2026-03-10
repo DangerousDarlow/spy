@@ -1,7 +1,7 @@
 <script lang="ts">
 	import InputAndButton from '../shared/InputAndButton.svelte';
 	import Labelled from '../shared/Labelled.svelte';
-	import { Copy, Dices } from 'lucide-svelte';
+	import { Copy } from 'lucide-svelte';
 	import { dev, getRandomName, getUuid, writeToClipboard } from '$lib';
 	import { m } from '$lib/paraglide/messages.js';
 	import { saveSettingsToLocalStorage, settings } from './settings.svelte.ts';
@@ -43,11 +43,9 @@
 
 	{#if dev}
 		<button
-			class="random-button btn preset-filled-primary-500 p-4"
-			title={m.settings_random_button_title()}
+			class="random-button btn preset-filled-primary-500"
 			onclick={randomiseNameAndId}
 		>
-			<Dices size={24} />
 			{m.settings_random_button_text()}
 		</button>
 	{/if}
