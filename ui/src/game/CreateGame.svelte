@@ -22,7 +22,6 @@
 			buttonTitle={m.create_game_randomise_name_button_label()}
 			buttonIcon={Dices}
 			onButtonClick={randomiseName}
-			readonly
 		/>
 	</Labelled>
 </div>
