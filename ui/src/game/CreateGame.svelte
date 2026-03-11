@@ -1,6 +1,6 @@
 <script lang="ts">
+	import CloseSpaced from '../shared/CloseSpaced.svelte';
 	import InputAndButton from '../shared/InputAndButton.svelte';
-	import Labelled from '../shared/Labelled.svelte';
 	import { Dices } from 'lucide-svelte';
 	import { getRandomJoinedWords } from '$lib';
 	import { getRandomProducts } from './getRandomProducts.ts';
@@ -27,7 +27,11 @@
 <div class="flex w-full flex-col gap-4">
 	<h3 class="h3">{m.create_game_heading()}</h3>
 
-	<Labelled idFor="create-name" label={m.create_game_name_label()}>
+	<CloseSpaced>
+		<label for="create-name" class="label label-text">
+			{m.create_game_name_label()}
+		</label>
+
 		<InputAndButton
 			id="create-name"
 			bind:value={name}
@@ -35,31 +39,35 @@
 			buttonIcon={Dices}
 			onButtonClick={randomiseName}
 		/>
-	</Labelled>
+	</CloseSpaced>
 
-	<h4 class="h4">{m.create_game_product_heading()}</h4>
+	<CloseSpaced>
+		<h4 class="h4">{m.create_game_product_heading()}</h4>
 
-	<Labelled idFor="create-product-number" label={m.create_game_product_number_label()}>
-		<div class="flex flex-col">
-			<p class="label-text">{m.create_game_product_number_recomendation_label()}</p>
-			<div class="flex w-full gap-4">
-				<input
-					class="input"
-					type="range"
-					max="10"
-					min="3"
-					bind:value={productCount}
-					aria-disabled="true"
-				/>
-				<input
-					id="create-product-number"
-					class="input w-12 text-center"
-					type="text"
-					bind:value={productCount}
-				/>
-			</div>
+		<label for="create-product-number" class="label label-text">
+			{m.create_game_product_number_label()}
+		</label>
+
+		<p class="label-text">{m.create_game_product_number_recomendation_label()}</p>
+
+		<div class="flex w-full gap-4">
+			<input
+				class="input"
+				type="range"
+				max="10"
+				min="3"
+				bind:value={productCount}
+				aria-disabled="true"
+			/>
+
+			<input
+				id="create-product-number"
+				class="input w-12 text-center"
+				type="text"
+				bind:value={productCount}
+			/>
 		</div>
-	</Labelled>
+	</CloseSpaced>
 
 	{#if products.length > 0}
 		<ul class="product-list list-inside list-none space-y-2 bg-surface-100-900 p-4">

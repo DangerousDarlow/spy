@@ -1,6 +1,6 @@
 <script lang="ts">
+	import CloseSpaced from '../shared/CloseSpaced.svelte';
 	import InputAndButton from '../shared/InputAndButton.svelte';
-	import Labelled from '../shared/Labelled.svelte';
 	import { Copy } from 'lucide-svelte';
 	import { dev, getRandomName, getRandomUuid, writeToClipboard } from '$lib';
 	import { m } from '$lib/paraglide/messages.js';
@@ -19,7 +19,11 @@
 
 <div class="settings flex flex-col gap-4">
 	{#if dev}
-		<Labelled idFor="user-id" label={m.settings_id_label()}>
+		<CloseSpaced>
+			<label for="user-id" class="label label-text">
+				{m.settings_id_label()}
+			</label>
+
 			<InputAndButton
 				id="user-id"
 				bind:value={settings.user.id}
@@ -28,10 +32,14 @@
 				onButtonClick={writeToClipboard}
 				readonly
 			/>
-		</Labelled>
+		</CloseSpaced>
 	{/if}
 
-	<Labelled idFor="user-name" label={m.settings_name_label()}>
+	<CloseSpaced>
+		<label for="user-name" class="label label-text">
+			{m.settings_name_label()}
+		</label>
+
 		<input
 			id="user-name"
 			class="input"
@@ -39,7 +47,7 @@
 			placeholder={m.settings_name_placeholder()}
 			bind:value={settings.user.name}
 		/>
-	</Labelled>
+	</CloseSpaced>
 
 	{#if dev}
 		<button class="random-button btn preset-filled-primary-500" onclick={randomiseNameAndId}>
