@@ -15,7 +15,7 @@
 {#if open}
 	<div class="popup absolute inset-0 z-10 flex flex-col justify-end">
 		<div
-			class="backdrop bg-inactive flex-1 bg-gray-900/50"
+			class="backdrop bg-inactive flex-1 bg-gray-900/90"
 			onclick={close}
 			aria-hidden="true"
 		></div>
