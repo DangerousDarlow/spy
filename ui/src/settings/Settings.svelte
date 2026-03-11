@@ -19,7 +19,7 @@
 
 <div class="settings flex flex-col gap-4">
 	{#if dev}
-		<Labelled id="user-id" label={m.settings_id_label()}>
+		<Labelled idFor="user-id" label={m.settings_id_label()}>
 			<InputAndButton
 				id="user-id"
 				bind:value={settings.user.id}
@@ -31,7 +31,7 @@
 		</Labelled>
 	{/if}
 
-	<Labelled id="user-name" label={m.settings_name_label()}>
+	<Labelled idFor="user-name" label={m.settings_name_label()}>
 		<input
 			id="user-name"
 			class="input"

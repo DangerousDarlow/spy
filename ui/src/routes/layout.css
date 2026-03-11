@@ -21,12 +21,4 @@
 
 	#root {
 	}
-
-	h1 {
-		@apply text-2xl font-bold tracking-tight;
-	}
-
-	h2 {
-		@apply text-xl font-bold tracking-tight;
-	}
 }

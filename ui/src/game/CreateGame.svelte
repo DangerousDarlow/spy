@@ -5,22 +5,29 @@
 	import { getRandomJoinedWords } from '$lib';
 	import { getRandomProducts } from './getRandomProducts.ts';
 	import { m } from '$lib/paraglide/messages';
+	import { onMount } from 'svelte';
 
-	let name = $state(getRandomJoinedWords(3));
+	let name = $state('');
+	let productCount = $state(5);
+	let products: string[] = $derived([]);
 
 	function randomiseName() {
 		name = getRandomJoinedWords(3);
 	}
 
-	let productCount = $state(5);
+	onMount(() => {
+		randomiseName();
+	});
 
-	let products = $derived(getRandomProducts(productCount).sort());
+	$effect(() => {
+		products = getRandomProducts(productCount);
+	});
 </script>
 
 <div class="flex w-full flex-col gap-4">
-	<h2>{m.create_game_heading()}</h2>
+	<h3 class="h3">{m.create_game_heading()}</h3>
 
-	<Labelled id="create-name" label={m.create_game_name_label()}>
+	<Labelled idFor="create-name" label={m.create_game_name_label()}>
 		<InputAndButton
 			id="create-name"
 			bind:value={name}
@@ -30,9 +37,11 @@
 		/>
 	</Labelled>
 
-	<Labelled id="create-product-count" label={m.create_game_product_label()}>
+	<h4 class="h4">{m.create_game_product_heading()}</h4>
+
+	<Labelled idFor="create-product-number" label={m.create_game_product_number_label()}>
 		<div class="flex flex-col">
-			<p class="label-text">{m.create_game_product_recomendation_label()}</p>
+			<p class="label-text">{m.create_game_product_number_recomendation_label()}</p>
 			<div class="flex w-full gap-4">
 				<input
 					class="input"
@@ -43,7 +52,7 @@
 					aria-disabled="true"
 				/>
 				<input
-					id="create-product-count"
+					id="create-product-number"
 					class="input w-12 text-center"
 					type="text"
 					bind:value={productCount}
@@ -52,9 +61,11 @@
 		</div>
 	</Labelled>
 
-	<ul class="list-inside list-none space-y-2 bg-surface-100-900 p-4">
-		{#each products as product, index (`${product}-${index}`)}
-			<li class="text">{product}</li>
-		{/each}
-	</ul>
+	{#if products.length > 0}
+		<ul class="product-list list-inside list-none space-y-2 bg-surface-100-900 p-4">
+			{#each products as product, index (`${product}-${index}`)}
+				<li class="text">{product}</li>
+			{/each}
+		</ul>
+	{/if}
 </div>
