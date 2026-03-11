@@ -76,4 +76,8 @@
 			{/each}
 		</ul>
 	{/if}
+
+	<button class="create-game-button btn preset-filled-primary-500">
+		{m.create_game_button_text()}
+	</button>
 </div>

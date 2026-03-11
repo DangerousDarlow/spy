@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"application_name": "Spy",
+	"create_game_button_text": "Create",
 	"create_game_heading": "Create a new game",
 	"create_game_name_label": "Name",
 	"create_game_product_heading": "Products",
