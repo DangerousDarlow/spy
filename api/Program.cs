@@ -18,10 +18,7 @@ builder.Logging.Services.Configure<LoggerFilterOptions>(options =>
     // Application Insights requires an explicit override. Log levels can also be configured using appsettings.json.
     // For more information, see https://learn.microsoft.com/azure/azure-monitor/app/worker-service#ilogger-logs
     var defaultRule = options.Rules.FirstOrDefault(rule => rule.ProviderName == "Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider");
-    if (defaultRule is not null)
-    {
-        options.Rules.Remove(defaultRule);
-    }
+    if (defaultRule is not null) options.Rules.Remove(defaultRule);
 });
 
 builder.Build().Run();

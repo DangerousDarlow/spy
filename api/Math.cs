@@ -12,7 +12,7 @@ namespace api;
 public class Math(IOptions<JsonSerializerOptions> jsonSerializerOptions, ILogger<Math> logger)
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions = jsonSerializerOptions.Value;
-    
+
     [Function("Double")]
     [OpenApiOperation("Double")]
     [OpenApiRequestBody("application/json", typeof(Body), Required = true)]
@@ -22,7 +22,7 @@ public class Math(IOptions<JsonSerializerOptions> jsonSerializerOptions, ILogger
         var requestBodyString = await new StreamReader(request.Body).ReadToEndAsync();
         var requestBody = JsonSerializer.Deserialize<Body>(requestBodyString, _jsonSerializerOptions);
         logger.LogInformation("Doubling number: {Number}", requestBody?.Value);
-        return new OkObjectResult(new Body (requestBody?.Value * 2 ?? 0 ));
+        return new OkObjectResult(new Body(requestBody?.Value * 2 ?? 0));
     }
 
     public record Body(int Value);
