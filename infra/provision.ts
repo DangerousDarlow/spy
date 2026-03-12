@@ -12,7 +12,7 @@ import {
 
 const environment = process.argv[2] ?? "dev";
 const context = createAzureContext(environment);
-const { staticWebAppName, resourceGroupName, location } = context;
+const { baseName, resourceGroupName, location } = context;
 
 logInfo("Provisioning static web application");
 logAzureContext(context);
@@ -27,7 +27,7 @@ if (!resourceGroupExists) {
 logInfo("Validating resources");
 validateAzureResources(resourceGroupName, environment);
 
-const deploymentName = createDeploymentName(staticWebAppName);
+const deploymentName = createDeploymentName(baseName);
 
 logInfo(`Deploying resources: ${deploymentName}`);
 const staticWebAppUrl = deployAzureResources(
