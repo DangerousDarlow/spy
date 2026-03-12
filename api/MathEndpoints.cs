@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace api;
 
-public class Math(IOptions<JsonSerializerOptions> jsonSerializerOptions, ILogger<Math> logger)
+public class MathEndpoints(IOptions<JsonSerializerOptions> jsonSerializerOptions, ILogger<MathEndpoints> logger)
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions = jsonSerializerOptions.Value;
 
