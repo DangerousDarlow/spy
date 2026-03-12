@@ -1,7 +1,7 @@
 namespace api;
 
 public record Game(
-    Guid Guid,
+    Guid Id,
     string Name,
     GameState State,
     DateTime CreatedAt,
