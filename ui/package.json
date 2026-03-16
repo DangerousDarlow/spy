@@ -15,11 +15,13 @@
 		"lint:fix": "prettier --check --write . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"openapi-ts": "openapi-ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",
 		"@eslint/js": "^10.0.1",
+		"@hey-api/openapi-ts": "^0.94.2",
 		"@inlang/paraglide-js": "^2.15.0",
 		"@playwright/test": "^1.58.2",
 		"@skeletonlabs/skeleton": "^4.13.0",

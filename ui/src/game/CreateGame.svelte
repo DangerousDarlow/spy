@@ -2,10 +2,13 @@
 	import CloseSpaced from '../shared/CloseSpaced.svelte';
 	import InputAndButton from '../shared/InputAndButton.svelte';
 	import { Dices } from 'lucide-svelte';
-	import { getRandomJoinedWords } from '$lib';
+	import { createMutation as clientCreateMutation } from '$lib/api/client/@tanstack/svelte-query.gen';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { getRandomJoinedWords, getRandomUuid } from '$lib';
 	import { getRandomProducts } from './getRandomProducts.ts';
 	import { m } from '$lib/paraglide/messages';
 	import { onMount } from 'svelte';
+	import { settings } from '../settings/settings.svelte.ts';
 
 	let name = $state('');
 	let productCount = $state(5);
@@ -13,6 +16,29 @@
 
 	function randomiseName() {
 		name = getRandomJoinedWords(3);
+	}
+
+	const createGameMutation = createMutation(() => ({
+		...clientCreateMutation({
+			parseAs: 'json'
+		}),
+		onSuccess: () => {
+			console.log('Game created successfully');
+		}
+	}));
+
+	async function onClickCreateGame() {
+		const gameId = getRandomUuid();
+		await createGameMutation.mutateAsync({
+			headers: {
+				'Player-Id': settings.user.id
+			},
+			body: {
+				id: gameId,
+				name,
+				products
+			}
+		});
 	}
 
 	onMount(() => {
@@ -77,7 +103,7 @@
 		</ul>
 	{/if}
 
-	<button class="create-game-button btn preset-filled-primary-500">
+	<button class="create-game-button btn preset-filled-primary-500" onclick={onClickCreateGame}>
 		{m.create_game_button_text()}
 	</button>
 </div>
