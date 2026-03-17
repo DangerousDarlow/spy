@@ -1,4 +1,5 @@
 using api;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,25 @@ builder.UseMiddleware<PlayerIdHeaderMiddleware>();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
+
+builder.Services.AddSingleton(_ =>
+{
+    var connectionString = Environment.GetEnvironmentVariable("COSMOS_CONNECTION_STRING")
+                           ?? throw new InvalidOperationException("Missing COSMOS_CONNECTION_STRING configuration.");
+
+    return new CosmosClient(connectionString);
+});
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    var databaseName = Environment.GetEnvironmentVariable("COSMOS_DATABASE_NAME") ??
+                       throw new InvalidOperationException("Missing COSMOS_DATABASE_NAME configuration.");
+
+    var containerName = Environment.GetEnvironmentVariable("COSMOS_GAMES_CONTAINER_NAME") ??
+                        throw new InvalidOperationException("Missing COSMOS_GAMES_CONTAINER_NAME configuration.");
+
+    return serviceProvider.GetRequiredService<CosmosClient>().GetContainer(databaseName, containerName);
+});
 
 builder.Logging.Services.Configure<LoggerFilterOptions>(options =>
 {

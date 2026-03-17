@@ -123,6 +123,8 @@ resource staticWebAppFunctionAppSettings 'Microsoft.Web/staticSites/config@2024-
   properties: {
     COSMOS_ACCOUNT_ENDPOINT: cosmosAccount.properties.documentEndpoint
     COSMOS_CONNECTION_STRING: listConnectionStrings(cosmosAccount.id, cosmosApiVersion).connectionStrings[0].connectionString
+    COSMOS_DATABASE_NAME: cosmosDatabase.name
+    COSMOS_GAMES_CONTAINER_NAME: cosmosGamesContainer.name
   }
 }
 

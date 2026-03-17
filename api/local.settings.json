@@ -2,7 +2,10 @@
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "COSMOS_CONNECTION_STRING": "",
+    "COSMOS_DATABASE_NAME": "nd-spy-dev-db",
+    "COSMOS_GAMES_CONTAINER_NAME": "games"
   },
   "ConnectionStrings": {}
 }
