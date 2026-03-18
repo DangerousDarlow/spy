@@ -97,20 +97,11 @@ resource cosmosGamesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
   properties: {
     resource: {
       id: cosmosGamesContainerName
-      defaultTtl: 172800
+      defaultTtl: 86400
       partitionKey: {
         kind: 'Hash'
         paths: [
           '/id'
-        ]
-      }
-      uniqueKeyPolicy: {
-        uniqueKeys: [
-          {
-            paths: [
-              '/name'
-            ]
-          }
         ]
       }
     }
