@@ -22,7 +22,6 @@ const PRODUCTS: string[] = [
 	'Deodorant',
 	'Desk',
 	'Drill',
-	'Earphones',
 	'Fan',
 	'Flashlight',
 	'Fork',
@@ -61,7 +60,6 @@ const PRODUCTS: string[] = [
 	'Spoon',
 	'Stapler',
 	'Suitcase',
-	'Sunglasses',
 	'Tablet',
 	'Television',
 	'Thermometer',
@@ -73,12 +71,9 @@ const PRODUCTS: string[] = [
 	'Video Game',
 	'Wallet',
 	'Washing Machine',
-	'Waste Bin',
 	'Watch',
-	'Wheelbarrow',
-	'Yoga Mat'
 ];
 
 export function getRandomProducts(count: number): string[] {
-	return getRandomStringsFromArray(PRODUCTS, count);
+	return getRandomStringsFromArray(PRODUCTS, count).sort();
 }
