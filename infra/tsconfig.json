@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": ["node"],
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "noEmit": true
   }

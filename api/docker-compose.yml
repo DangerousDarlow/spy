@@ -10,7 +10,7 @@ services:
       - ./azurite:/data
 
   cosmos:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview
     ports:
       - "8081:8081"
       - "10250:10250"
