@@ -50,8 +50,8 @@ node deploy.ts [environment]
 
 The Cosmos container has persistence disabled (`AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=false`), so all data is lost when the container stops.
 
-After starting the containers, run `dev-cosmos-init.ts` to create the database and `games` container in the emulator. It reads the database and container names from `../api/local.settings.json`.
+After starting the containers, run `cosmos-init-dev.ts` to create the database and `games` container in the emulator. It reads the database and container names from `../api/local.settings.json`.
 
 ```bash
-node dev-cosmos-init.ts
+node cosmos-init-dev.ts
 ```

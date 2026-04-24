@@ -20,8 +20,18 @@ docker compose up
 Run node script to create database and container.
 ```sh
 cd infra
-node dev-cosmos-init.ts
+node cosmos-init-dev.ts
 ```
+
+### Troubleshooting: OpenSSL "wrong version number"
+
+If you get an SSL/TLS error like `wrong version number` or `EPROTO`, check the endpoint protocol in `api/local.settings.json`.
+
+For this Docker-based emulator setup, use:
+
+`AccountEndpoint=http://localhost:8081/`
+
+Using `https://localhost:8081/` will fail because the local emulator endpoint is exposed as HTTP in this environment.
 
 ## Run api
 
