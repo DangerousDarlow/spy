@@ -20,7 +20,15 @@ builder.Services.AddSingleton(_ =>
     var connectionString = Environment.GetEnvironmentVariable("COSMOS_CONNECTION_STRING")
                            ?? throw new InvalidOperationException("Missing COSMOS_CONNECTION_STRING configuration.");
 
-    return new CosmosClient(connectionString);
+    var isLocal = connectionString.Contains("localhost", StringComparison.OrdinalIgnoreCase)
+                  || connectionString.Contains("127.0.0.1", StringComparison.OrdinalIgnoreCase);
+
+    var options = new CosmosClientOptions
+    {
+        ConnectionMode = isLocal ? ConnectionMode.Gateway : ConnectionMode.Direct
+    };
+
+    return new CosmosClient(connectionString, options);
 });
 
 builder.Services.AddSingleton(serviceProvider =>
