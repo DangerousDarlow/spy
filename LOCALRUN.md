@@ -45,3 +45,5 @@ Run SvelteKit application.
 cd ui
 pnpm dev -- --open
 ```
+
+If api calls fail it might be that the api application port does not match the value in `ui/vite.config.ts`.

@@ -45,7 +45,7 @@ Add imports to `/src/routes/layout.css`.
 
 Add `data-theme` attribute to `/src/app.html`.
 
-```
+```html
 <html data-theme="cerberus">
     <!-- ... -->
 </html>
