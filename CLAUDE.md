@@ -9,7 +9,7 @@ Asymmetric social deduction game. Built as a learning exercise for Azure Static 
 ```
 api/      C# Azure Functions (isolated worker, .NET 9)
 ui/       SvelteKit UI (pnpm workspace)
-infra/    Azure Bicep + TypeScript deploy/provision scripts
+infra/    Azure Bicep + TypeScript deploy/provision scripts + docker-compose.yml for local dev
 ```
 
 ## API (`api/`)
@@ -21,7 +21,7 @@ infra/    Azure Bicep + TypeScript deploy/provision scripts
 - **JSON:** Both `System.Text.Json` and `Newtonsoft.Json` attributes are required on models — Cosmos SDK uses Newtonsoft, the Functions runtime uses STJ
 - **Player identity:** Passed via `Player-Id` header; enforced by `PlayerIdHeaderMiddleware` and `[RequirePlayerIdHeader]` attribute
 - **Environment variables:** `COSMOS_CONNECTION_STRING`, `COSMOS_DATABASE_NAME`, `COSMOS_GAMES_CONTAINER_NAME`
-- **Local dev:** Azurite for Cosmos emulation (`docker-compose.yml`); API runs on `http://localhost:7071`
+- **Local dev:** `infra/docker-compose.yml` runs Azurite (blob/queue/table, ports 10000–10002) and the Cosmos DB Linux emulator (port 8081); API runs on `http://localhost:7245`
 
 ### Domain model
 
@@ -65,6 +65,7 @@ pnpm test         # unit + e2e (playwright)
 
 ## Infra (`infra/`)
 
+- **Local dev containers:** `docker-compose.yml` — Azurite + Cosmos DB emulator (vnext-preview)
 - **Provisioning:** `node provision.ts` — creates resource group if needed, validates and applies Bicep
 - **Deployment:** `node deploy.ts` — builds UI + API, gets SWA deployment token, deploys via Azure SWA CLI
 - **Resources:** Azure Static Web App, Cosmos DB account/database/container
