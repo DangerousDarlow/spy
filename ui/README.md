@@ -45,14 +45,14 @@ Add imports to `/src/routes/layout.css`.
 Add `data-theme` attribute to `/src/app.html`.
 
 ```html
-<html data-theme="cerberus">
+<html lang="en-GB" data-theme="cerberus">
     <!-- ... -->
 </html>
 ```
 
 ## Local Development
 
-To run locally see the [local run instructions](/LOCALRUN.md).
+To run locally see the [local run instructions](../LOCALRUN.md).
 
 ## Production Preview
 
