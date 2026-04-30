@@ -7,17 +7,19 @@
 		onclick?: (toggled: boolean) => void;
 		icon: typeof Icon;
 		size?: number;
+		disabled?: boolean;
 	}
 
-	let { toggled = $bindable(), onclick, icon, size = 40 }: Props = $props();
+	let { toggled = $bindable(), onclick, icon, size = 40, disabled = false }: Props = $props();
 
 	const IconComponent = $derived(icon);
 
 	const clicked = () => {
+		if (disabled) return;
+
 		toggled = !toggled;
-		if (onclick) {
-			onclick(toggled);
-		}
+
+		if (onclick) onclick(toggled);
 	};
 </script>
 
@@ -25,6 +27,7 @@
 	class="toggle-button btn rounded-full preset-filled-primary-500 p-2"
 	title={m.settings_button_title()}
 	onclick={clicked}
+	{disabled}
 >
 	<IconComponent {size} />
 </button>

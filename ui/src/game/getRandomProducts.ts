@@ -71,7 +71,7 @@ const PRODUCTS: string[] = [
 	'Video Game',
 	'Wallet',
 	'Washing Machine',
-	'Watch',
+	'Watch'
 ];
 
 export function getRandomProducts(count: number): string[] {

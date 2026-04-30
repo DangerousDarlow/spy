@@ -2,12 +2,14 @@
 	interface Props {
 		open: boolean;
 		closeOnClick?: boolean;
+		canClose?: boolean;
 		children?: import('svelte').Snippet;
 	}
 
-	let { open = $bindable(), closeOnClick = false, children }: Props = $props();
+	let { open = $bindable(), closeOnClick = false, canClose = true, children }: Props = $props();
 
 	const close = () => {
+		if (!canClose) return;
 		open = false;
 	};
 </script>

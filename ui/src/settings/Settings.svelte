@@ -13,6 +13,7 @@
 
 	$effect(() => {
 		if (dev) return;
+		if (!settings.user.name.trim()) return;
 		saveSettingsToLocalStorage();
 	});
 </script>
@@ -52,6 +53,10 @@
 	{#if dev}
 		<button class="random-button btn preset-filled-primary-500" onclick={randomiseNameAndId}>
 			{m.settings_random_button_text()}
+		</button>
+
+		<button class="save-button btn preset-filled-primary-500" onclick={saveSettingsToLocalStorage}>
+			{m.settings_save_button_text()}
 		</button>
 	{/if}
 </div>

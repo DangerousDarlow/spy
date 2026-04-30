@@ -12,6 +12,7 @@
 	import { browser } from '$app/environment';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/state';
+	import { settings } from '../settings/settings.svelte.ts';
 
 	let { children } = $props();
 
@@ -28,6 +29,13 @@
 	}
 
 	let settingsOpen = $state(false);
+	const canCloseSettings = $derived(settings.user.name.trim().length > 0);
+
+	$effect(() => {
+		if (!settings.user.name.trim()) {
+			settingsOpen = true;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -37,13 +45,18 @@
 <QueryClientProvider client={queryClient}>
 	<Layout>
 		<Header>
-			<ToggleButton bind:toggled={settingsOpen} icon={SettingsIcon} size={32} />
+			<ToggleButton
+				bind:toggled={settingsOpen}
+				icon={SettingsIcon}
+				size={32}
+				disabled={settingsOpen && !canCloseSettings}
+			/>
 		</Header>
 
 		<Main>
 			{@render children?.()}
 
-			<TopPopUp bind:open={settingsOpen}>
+			<TopPopUp bind:open={settingsOpen} canClose={canCloseSettings}>
 				<Settings />
 			</TopPopUp>
 		</Main>

@@ -19,5 +19,6 @@
 	"settings_id_label": "ID",
 	"settings_name_label": "Name",
 	"settings_name_placeholder": "Your name",
-	"settings_random_button_text": "Randomise ID and name"
+	"settings_random_button_text": "Randomise ID and name",
+	"settings_save_button_text": "Save to local storage"
 }

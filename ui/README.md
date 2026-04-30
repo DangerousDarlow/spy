@@ -32,7 +32,6 @@ Install skeleton package.
 
 ```sh
 pnpm add -D @skeletonlabs/skeleton @skeletonlabs/skeleton-svelte
-
 ```
 
 Add imports to `/src/routes/layout.css`.
