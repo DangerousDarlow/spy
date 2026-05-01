@@ -63,6 +63,30 @@ pnpm lint         # prettier + eslint
 pnpm test         # unit + e2e (playwright)
 ```
 
+### Testing
+
+Two Vitest projects run in parallel:
+
+| Project | Environment | File pattern | What it covers |
+|---------|-------------|--------------|----------------|
+| `client` | Chromium (headless, via `vitest-browser-svelte`) | `*.svelte.spec.ts` | Svelte component tests |
+| `server` | Node | `*.spec.ts` (not `*.svelte.*`) | Pure function unit tests |
+
+E2E tests use Playwright directly (`e2e/` directory), not Vitest.
+
+```bash
+pnpm test:unit --run                      # all unit tests once (CI)
+pnpm test:unit --run --project=client     # component tests only
+pnpm test:unit --run --project=server     # unit tests only
+pnpm test:e2e                             # Playwright E2E (requires built app)
+```
+
+Key conventions:
+- Component tests use `page.getByLabelText()`, `page.getByRole()`, `expect.element()` from `vitest/browser` and `vitest-browser-svelte`
+- `vi.mock('$lib', ...)` requires a **separate test file** per mock value — `vi.mock` is hoisted and can't be toggled between tests in the same file
+- Module-level `$state` (e.g. `settings`) persists across tests within a file; reset it in `beforeEach`
+- TanStack Query components need a `QueryClientProvider` wrapper — use a `*Wrapper.svelte` helper in the same directory
+
 ## Infra (`infra/`)
 
 - **Local dev containers:** `docker-compose.yml` — Azurite + Cosmos DB emulator (vnext-preview)
