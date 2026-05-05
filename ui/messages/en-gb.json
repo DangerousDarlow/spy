@@ -14,6 +14,8 @@
 	"double_button_text_in_progress": "Doubling...",
 	"double_text": "Congratulations! You have found the secret endpoint used to demonstrate the managed Azure functions api.",
 	"empty_content": "Nothing to see here",
+	"play_game_heading": "Play game",
+	"play_game_id_label": "Game ID",
 	"settings_button_title": "Edit settings",
 	"settings_id_copy": "Copy ID to clipboard",
 	"settings_id_label": "ID",

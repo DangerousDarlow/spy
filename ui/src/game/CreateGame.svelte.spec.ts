@@ -21,7 +21,9 @@ beforeEach(() => {
 describe('CreateGame', () => {
 	it('renders the heading', async () => {
 		render(CreateGameWrapper);
-		await expect.element(page.getByRole('heading', { name: 'Create a new game' })).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('heading', { name: 'Create a new game' }))
+			.toBeInTheDocument();
 	});
 
 	it('renders a non-empty game name on mount', async () => {
@@ -44,7 +46,10 @@ describe('CreateGame', () => {
 		render(CreateGameWrapper);
 		await expect.element(page.getByRole('listitem').first()).toBeInTheDocument();
 
-		const texts = page.getByRole('listitem').elements().map((el) => el.textContent ?? '');
+		const texts = page
+			.getByRole('listitem')
+			.elements()
+			.map((el) => el.textContent ?? '');
 		expect(texts).toEqual([...texts].sort());
 	});
 

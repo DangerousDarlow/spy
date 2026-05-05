@@ -6,8 +6,10 @@
 	import { createMutation } from '@tanstack/svelte-query';
 	import { getRandomJoinedWords, getRandomUuid } from '$lib';
 	import { getRandomProducts } from './getRandomProducts.ts';
+	import { goto } from '$app/navigation';
 	import { m } from '$lib/paraglide/messages';
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { settings } from '../settings/settings.svelte.ts';
 
 	let name = $state('');
@@ -29,6 +31,7 @@
 
 	async function onClickCreateGame() {
 		const gameId = getRandomUuid();
+
 		await createGameMutation.mutateAsync({
 			headers: {
 				'Player-Id': settings.user.id
@@ -39,6 +42,8 @@
 				products
 			}
 		});
+
+		await goto(resolve(`/play/${gameId}`));
 	}
 
 	onMount(() => {

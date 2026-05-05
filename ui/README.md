@@ -46,7 +46,7 @@ Add `data-theme` attribute to `/src/app.html`.
 
 ```html
 <html lang="en-GB" data-theme="cerberus">
-    <!-- ... -->
+	<!-- ... -->
 </html>
 ```
 
@@ -67,11 +67,11 @@ pnpm preview
 
 The project has three layers of tests:
 
-| Layer | Tool | Scope |
-|-------|------|-------|
-| Unit | Vitest (Node) | Pure TypeScript functions |
-| Component | Vitest + `vitest-browser-svelte` (Chromium) | Svelte components |
-| E2E | Playwright | Full user journeys in a built app |
+| Layer     | Tool                                        | Scope                             |
+| --------- | ------------------------------------------- | --------------------------------- |
+| Unit      | Vitest (Node)                               | Pure TypeScript functions         |
+| Component | Vitest + `vitest-browser-svelte` (Chromium) | Svelte components                 |
+| E2E       | Playwright                                  | Full user journeys in a built app |
 
 ### Running tests
 

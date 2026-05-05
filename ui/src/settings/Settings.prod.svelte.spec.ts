@@ -31,12 +31,16 @@ describe('Settings (production mode)', () => {
 
 	it('does not render the randomise button', async () => {
 		render(Settings);
-		await expect.element(page.getByRole('button', { name: 'Randomise ID and name' })).not.toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: 'Randomise ID and name' }))
+			.not.toBeInTheDocument();
 	});
 
 	it('does not render the save button', async () => {
 		render(Settings);
-		await expect.element(page.getByRole('button', { name: 'Save to local storage' })).not.toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: 'Save to local storage' }))
+			.not.toBeInTheDocument();
 	});
 
 	it('auto-saves to localStorage when a non-empty name is entered', async () => {

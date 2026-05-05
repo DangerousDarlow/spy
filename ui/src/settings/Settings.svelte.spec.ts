@@ -25,12 +25,16 @@ describe('Settings (dev mode)', () => {
 
 	it('renders the randomise button', async () => {
 		render(Settings);
-		await expect.element(page.getByRole('button', { name: 'Randomise ID and name' })).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: 'Randomise ID and name' }))
+			.toBeInTheDocument();
 	});
 
 	it('renders the save button', async () => {
 		render(Settings);
-		await expect.element(page.getByRole('button', { name: 'Save to local storage' })).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: 'Save to local storage' }))
+			.toBeInTheDocument();
 	});
 
 	it('clicking randomise updates both id and name to new non-empty values', async () => {
