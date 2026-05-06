@@ -24,8 +24,8 @@
 		...clientCreateMutation({
 			parseAs: 'json'
 		}),
-		onSuccess: () => {
-			console.log('Game created successfully');
+		onError: () => {
+			console.error('Failed	to create game');
 		}
 	}));
 
