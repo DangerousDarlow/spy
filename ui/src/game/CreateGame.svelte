@@ -48,7 +48,6 @@
 			});
 
 			await goto(resolve(`/play/${gameId}`));
-
 		} catch {
 			// onError handles logging
 		}
