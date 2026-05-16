@@ -27,3 +27,6 @@ services:
     ports:
       - "8474:8474"   # toxiproxy HTTP API
       - "7246:7246"   # proxied API port
+    volumes:
+      - ./toxiproxy.json:/config/toxiproxy.json
+    command: ["-config", "/config/toxiproxy.json"]
