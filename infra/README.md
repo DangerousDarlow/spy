@@ -43,24 +43,27 @@ node deploy.ts [environment]
 
 ## Local dev
 
-`docker-compose.yml` runs two emulators:
+`docker-compose.yml` runs the following services:
 
 - **Azurite** — Azure Storage emulator (blob, queue, table)
 - **Cosmos DB** — Azure Cosmos DB emulator (`vnext-preview` image on port 8081)
+- **Toxiproxy** — network fault injection proxy
+- **dev-init** — one-shot Node.js container that initialises Cosmos DB and Toxiproxy once the emulators are up
 
 The Cosmos container has persistence disabled (`AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=false`), so all data is lost when the container stops.
 
-After starting the containers, run `cosmos-init-dev.ts` to create the database and `games` container in the emulator. It reads the database and container names from `../api/local.settings.json`.
+`dev-init` creates the Cosmos database and `games` container (reading names from `../api/local.settings.json`) and sets up the Toxiproxy proxy and latency toxic. The scripts can also be run directly against local services:
 
 ```bash
 node cosmos-init-dev.ts
+node toxiproxy-init-dev.ts
 ```
 
 ### Toxiproxy
 
 `docker-compose.yml` also runs [Toxiproxy](https://github.com/Shopify/toxiproxy) to simulate network conditions. The management API is on port `8474` and port `7246` proxies to the API at `localhost:7245`.
 
-The proxy and a 5 second latency toxic are configured automatically from `toxiproxy.json` when the container starts. Point the UI at `http://localhost:7246` instead of `http://localhost:7245` to route traffic through the proxy.
+The `dev-init` service configures the proxy and a 5 second latency toxic automatically on startup. Point the UI at `http://localhost:7246` instead of `http://localhost:7245` to route traffic through the proxy.
 
 List proxies
 
