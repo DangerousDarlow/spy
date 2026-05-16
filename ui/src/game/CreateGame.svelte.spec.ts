@@ -8,6 +8,9 @@ const { mockMutationFn } = vi.hoisted(() => ({
 	mockMutationFn: vi.fn().mockResolvedValue(undefined)
 }));
 
+vi.mock('$app/navigation', () => ({ goto: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('$app/paths', () => ({ resolve: vi.fn((p: string) => p) }));
+
 vi.mock('$lib/api/client/@tanstack/svelte-query.gen', () => ({
 	createMutation: () => ({ mutationFn: mockMutationFn })
 }));
@@ -90,6 +93,38 @@ describe('CreateGame', () => {
 
 		expect(mockMutationFn).toHaveBeenCalledOnce();
 		expect(mockMutationFn.mock.calls[0][0].headers['Player-Id']).toBe('test-player-id');
+	});
+
+	it('disables all controls while mutation is pending', async () => {
+		let resolve!: () => void;
+		mockMutationFn.mockReturnValueOnce(new Promise<void>((res) => (resolve = res)));
+
+		render(CreateGameWrapper);
+		await page.getByRole('button', { name: 'Create' }).click();
+
+		await expect.element(page.getByRole('button', { name: 'Create' })).toBeDisabled();
+		await expect.element(page.getByLabelText('Name')).toBeDisabled();
+		await expect.element(page.getByRole('button', { name: 'Randomise name' })).toBeDisabled();
+		await expect.element(page.getByLabelText('Number of products')).toBeDisabled();
+
+		resolve();
+
+		await expect.element(page.getByRole('button', { name: 'Create' })).toBeEnabled();
+	});
+
+	it('logs an error when the mutation fails', async () => {
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+		const error = new Error('network failure');
+		mockMutationFn.mockRejectedValueOnce(error);
+
+		render(CreateGameWrapper);
+		await page.getByRole('button', { name: 'Create' }).click();
+
+		await vi.waitFor(() => {
+			expect(consoleSpy).toHaveBeenCalledWith('Failed to create game', error);
+		});
+
+		consoleSpy.mockRestore();
 	});
 
 	it('passes the current name and products in the mutation body', async () => {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CloseSpaced from '../shared/CloseSpaced.svelte';
 	import InputAndButton from '../shared/InputAndButton.svelte';
+	import type { CreateError } from '$lib/api/client/types.gen';
 	import { Dices } from 'lucide-svelte';
 	import { createMutation as clientCreateMutation } from '$lib/api/client/@tanstack/svelte-query.gen';
 	import { createMutation } from '@tanstack/svelte-query';
@@ -24,26 +25,33 @@
 		...clientCreateMutation({
 			parseAs: 'json'
 		}),
-		onError: () => {
-			console.error('Failed	to create game');
+		onError: (error: CreateError) => {
+			console.error('Failed to create game', error);
 		}
 	}));
+
+	const disabled = $derived(createGameMutation.isPending);
 
 	async function onClickCreateGame() {
 		const gameId = getRandomUuid();
 
-		await createGameMutation.mutateAsync({
-			headers: {
-				'Player-Id': settings.user.id
-			},
-			body: {
-				id: gameId,
-				name,
-				products
-			}
-		});
+		try {
+			await createGameMutation.mutateAsync({
+				headers: {
+					'Player-Id': settings.user.id
+				},
+				body: {
+					id: gameId,
+					name,
+					products
+				}
+			});
 
-		await goto(resolve(`/play/${gameId}`));
+			await goto(resolve(`/play/${gameId}`));
+
+		} catch {
+			// onError handles logging
+		}
 	}
 
 	onMount(() => {
@@ -69,6 +77,7 @@
 			buttonTitle={m.create_game_randomise_name_button_label()}
 			buttonIcon={Dices}
 			onButtonClick={randomiseName}
+			{disabled}
 		/>
 	</CloseSpaced>
 
@@ -82,20 +91,14 @@
 		<p class="label-text">{m.create_game_product_number_recomendation_label()}</p>
 
 		<div class="flex w-full gap-4">
-			<input
-				class="input"
-				type="range"
-				max="10"
-				min="3"
-				bind:value={productCount}
-				aria-disabled="true"
-			/>
+			<input class="input" type="range" max="10" min="3" bind:value={productCount} {disabled} />
 
 			<input
 				id="create-product-number"
 				class="input w-12 text-center"
 				type="text"
 				bind:value={productCount}
+				{disabled}
 			/>
 		</div>
 	</CloseSpaced>
@@ -108,7 +111,11 @@
 		</ul>
 	{/if}
 
-	<button class="create-game-button btn preset-filled-primary-500" onclick={onClickCreateGame}>
+	<button
+		class="create-game-button btn preset-filled-primary-500"
+		{disabled}
+		onclick={onClickCreateGame}
+	>
 		{m.create_game_button_text()}
 	</button>
 </div>
