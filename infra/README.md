@@ -55,3 +55,31 @@ After starting the containers, run `cosmos-init-dev.ts` to create the database a
 ```bash
 node cosmos-init-dev.ts
 ```
+
+### Toxiproxy
+
+`docker-compose.yml` also runs [Toxiproxy](https://github.com/Shopify/toxiproxy) to simulate network conditions. The management API is on port `8474` and port `7246` proxies to the API at `localhost:7245`.
+
+Create the proxy after starting the containers:
+
+```zsh
+curl -X POST http://localhost:8474/proxies \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"api","listen":"0.0.0.0:7246","upstream":"host.docker.internal:7245","enabled":true}'
+```
+
+Add 5 second latency:
+
+```zsh
+curl -X POST http://localhost:8474/proxies/api/toxics \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"latency","type":"latency","attributes":{"latency":5000, "jitter":500}}'
+```
+
+Remove the latency toxic:
+
+```zsh
+curl -X DELETE http://localhost:8474/proxies/api/toxics/latency
+```
+
+Point the UI at `http://localhost:7246` instead of `http://localhost:7245` to route traffic through the proxy.
