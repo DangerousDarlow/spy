@@ -34,18 +34,36 @@ public class GameEndpoints(
     public async Task<IActionResult> Create([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest request)
     {
         var requestBodyString = await new StreamReader(request.Body).ReadToEndAsync();
-        var requestBody = JsonSerializer.Deserialize<CreateGameRequest>(requestBodyString, _jsonSerializerOptions);
-        if (requestBody is null) return new BadRequestResult();
+        var createGameRequest = JsonSerializer.Deserialize<CreateGameRequest>(requestBodyString, _jsonSerializerOptions);
+        if (createGameRequest is null)
+        {
+            return new BadRequestObjectResult(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.BadRequest,
+                Title = "Invalid request body.",
+                Detail = "The request body could not be deserialized as a create game request."
+            });
+        }
 
         var playerId = request.GetPlayerId();
+        if (createGameRequest.CreatedBy.Id != playerId)
+        {
+            return new BadRequestObjectResult(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.BadRequest,
+                Title = "Player id mismatch.",
+                Detail = "The player id in the request body must match the player id from the request header."
+            });
+        }
+
         var game = new Game(
-            requestBody.Id,
-            requestBody.Name,
+            createGameRequest.Id,
+            createGameRequest.Name,
             GameState.PlayerRegistration,
             DateTime.UtcNow,
-            playerId,
-            requestBody.Products,
-            [playerId]
+            createGameRequest.CreatedBy,
+            createGameRequest.Products,
+            [createGameRequest.CreatedBy]
         );
 
         try
@@ -62,10 +80,8 @@ public class GameEndpoints(
             {
                 Status = (int)HttpStatusCode.Conflict,
                 Title = "Game already exists.",
-                Detail = $"A game with id '{requestBody.Id}' already exists."
+                Detail = $"A game with id '{createGameRequest.Id}' already exists."
             });
         }
     }
-
-    public record CreateGameRequest(Guid Id, string Name, string[] Products);
 }

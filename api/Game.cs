@@ -1,5 +1,5 @@
-using Newtonsoft.Json;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace api;
 
@@ -23,7 +23,7 @@ public record Game(
     
     [property: JsonProperty("createdBy")]
     [property: JsonPropertyName("createdBy")]
-    Guid CreatedBy,
+    Player CreatedBy,
     
     [property: JsonProperty("products")]
     [property: JsonPropertyName("products")]
@@ -31,5 +31,5 @@ public record Game(
     
     [property: JsonProperty("players")]
     [property: JsonPropertyName("players")]
-    Guid[] Players
+    Player[] Players
 );
