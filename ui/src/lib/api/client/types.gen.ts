@@ -11,7 +11,13 @@ export type Body = {
 export type CreateGameRequest = {
     id?: string;
     name?: string;
+    createdBy?: Player;
     products?: Array<string>;
+};
+
+export type Player = {
+    id?: string;
+    name?: string;
 };
 
 export type ProblemDetails = {
@@ -45,6 +51,10 @@ export type CreateErrors = {
      * Payload of ProblemDetails
      */
     400: ProblemDetails;
+    /**
+     * Payload of ProblemDetails
+     */
+    409: ProblemDetails;
 };
 
 export type CreateError = CreateErrors[keyof CreateErrors];

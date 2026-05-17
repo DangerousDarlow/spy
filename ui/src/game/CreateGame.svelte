@@ -43,6 +43,7 @@
 				body: {
 					id: gameId,
 					name,
+					createdBy: { id: settings.user.id, name: settings.user.name },
 					products
 				}
 			});
