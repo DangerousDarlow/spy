@@ -48,6 +48,40 @@ public class GameEndpointsTests : IntegrationTest
             Assert.That(game.Products, Is.EqualTo(new[] { "Widget", "Gadget" }));
         });
     }
+    
+    [Test]
+    public async Task CreateDuplicate_ReturnsConflict()
+    {
+        var gameId = Guid.NewGuid();
+
+        var createRequest1 = new HttpRequestMessage(HttpMethod.Post, "api/Create")
+        {
+            Content = JsonContent.Create(new
+            {
+                id = gameId,
+                name = "Test Game",
+                products = new[] { "Widget", "Gadget" },
+                createdBy = new { id = PlayerId, name = "Alice" }
+            }, options: JsonOptions)
+        };
+
+        var createResponse = await Client.SendAsync(createRequest1);
+        Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        
+        var createRequest2 = new HttpRequestMessage(HttpMethod.Post, "api/Create")
+        {
+            Content = JsonContent.Create(new
+            {
+                id = gameId,
+                name = "Test Game 2",
+                products = new[] { "Bread", "Butter" },
+                createdBy = new { id = PlayerId, name = "Alice" }
+            }, options: JsonOptions)
+        };
+        
+        createResponse = await Client.SendAsync(createRequest2);
+        Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
+    }
 
     [Test]
     public async Task Get_NonExistentId_ReturnsNotFound()
