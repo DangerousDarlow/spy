@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateData, CreateErrors, CreateResponses, DoubleData, DoubleResponses } from './types.gen';
+import type { CreateData, CreateErrors, CreateResponses, DoubleData, DoubleResponses, GetData, GetErrors, GetResponses, TestData, TestErrors, TestResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -20,6 +20,17 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 
 export const create = <ThrowOnError extends boolean = false>(options: Options<CreateData, ThrowOnError>) => (options.client ?? client).post<CreateResponses, CreateErrors, ThrowOnError>({
     url: '/Create',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const get = <ThrowOnError extends boolean = false>(options: Options<GetData, ThrowOnError>) => (options.client ?? client).get<GetResponses, GetErrors, ThrowOnError>({ url: '/games/{id}', ...options });
+
+export const test = <ThrowOnError extends boolean = false>(options: Options<TestData, ThrowOnError>) => (options.client ?? client).post<TestResponses, TestErrors, ThrowOnError>({
+    url: '/games/test',
     ...options,
     headers: {
         'Content-Type': 'application/json',

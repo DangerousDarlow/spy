@@ -15,6 +15,16 @@ export type CreateGameRequest = {
     products?: Array<string>;
 };
 
+export type GamePublic = {
+    createdBy?: string | null;
+    players?: Array<string> | null;
+    id?: string | null;
+    name?: string | null;
+    state?: 'PlayerRegistration' | 'GameStarted' | 'GameOver';
+    createdAt?: string | null;
+    products?: Array<string> | null;
+};
+
 export type Player = {
     id?: string;
     name?: string;
@@ -31,6 +41,11 @@ export type ProblemDetails = {
             [key: string]: unknown;
         };
     };
+};
+
+export type TestRequest = {
+    gameId?: string;
+    testString?: string;
 };
 
 export type CreateData = {
@@ -60,6 +75,71 @@ export type CreateErrors = {
 export type CreateError = CreateErrors[keyof CreateErrors];
 
 export type CreateResponses = {
+    /**
+     * No description
+     */
+    200: unknown;
+};
+
+export type GetData = {
+    body?: never;
+    headers: {
+        /**
+         * Player UUID
+         */
+        'Player-Id': string;
+    };
+    path: {
+        /**
+         * Game id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/games/{id}';
+};
+
+export type GetErrors = {
+    /**
+     * Payload of ProblemDetails
+     */
+    404: ProblemDetails;
+};
+
+export type GetError = GetErrors[keyof GetErrors];
+
+export type GetResponses = {
+    /**
+     * Payload of GamePublic
+     */
+    200: GamePublic;
+};
+
+export type GetResponse = GetResponses[keyof GetResponses];
+
+export type TestData = {
+    body: TestRequest;
+    headers: {
+        /**
+         * Player UUID
+         */
+        'Player-Id': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/games/test';
+};
+
+export type TestErrors = {
+    /**
+     * Payload of ProblemDetails
+     */
+    400: ProblemDetails;
+};
+
+export type TestError = TestErrors[keyof TestErrors];
+
+export type TestResponses = {
     /**
      * No description
      */

@@ -18,6 +18,7 @@ namespace api;
 public class GameEndpoints(
     IOptions<JsonSerializerOptions> jsonSerializerOptions,
     Container gamesContainer,
+    ISignalRSender signalRSender,
     ILogger<GameEndpoints> logger)
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions = jsonSerializerOptions.Value;
@@ -124,5 +125,36 @@ public class GameEndpoints(
                 Detail = $"A game with id '{id}' was not found."
             });
         }
+    }
+
+    [Function("Test")]
+    [OpenApiOperation("Test")]
+    [OpenApiParameter(
+        PlayerIdHttpRequestExtensions.PlayerIdHeaderName,
+        In = ParameterLocation.Header, Required = true,
+        Type = typeof(string),
+        Description = "Player UUID"
+    )]
+    [OpenApiRequestBody("application/json", typeof(TestRequest), Required = true)]
+    [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+    [OpenApiResponseWithBody(HttpStatusCode.BadRequest, "application/json", typeof(ProblemDetails))]
+    public async Task<IActionResult> Test(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "games/test")]
+        HttpRequest request,
+        CancellationToken ct)
+    {
+        var requestBodyString = await new StreamReader(request.Body).ReadToEndAsync(ct);
+        var testRequest = JsonSerializer.Deserialize<TestRequest>(requestBodyString, _jsonSerializerOptions);
+
+        if (testRequest is null)
+            return new BadRequestObjectResult(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.BadRequest,
+                Title = "Invalid request body.",
+                Detail = "The request body could not be deserialized as a test game request."
+            });
+
+        await signalRSender.SendToGameAsync(testRequest.GameId.ToString(), "test", testRequest.TestString, ct);
+        return new OkResult();
     }
 }
