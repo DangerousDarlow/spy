@@ -8,19 +8,15 @@ public record GameBase(
     [property: JsonProperty("id")]
     [property: JsonPropertyName("id")]
     Guid Id,
-    
     [property: JsonProperty("name")]
     [property: JsonPropertyName("name")]
     string Name,
-    
     [property: JsonProperty("state")]
     [property: JsonPropertyName("state")]
     GameState State,
-    
     [property: JsonProperty("createdAt")]
     [property: JsonPropertyName("createdAt")]
     DateTime CreatedAt,
-    
     [property: JsonProperty("products")]
     [property: JsonPropertyName("products")]
     string[] Products

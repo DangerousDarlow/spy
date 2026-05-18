@@ -9,6 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Remove="api.IntegrationTests\**"/>
+        <None Remove="api.IntegrationTests\**"/>
+        <Content Remove="api.IntegrationTests\**"/>
+        <EmbeddedResource Remove="api.IntegrationTests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
         <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.59.0"/>
         <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.23.0"/>

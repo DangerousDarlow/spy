@@ -38,26 +38,23 @@ public class GameEndpoints(
     {
         var requestBodyString = await new StreamReader(request.Body).ReadToEndAsync();
         var createGameRequest = JsonSerializer.Deserialize<CreateGameRequest>(requestBodyString, _jsonSerializerOptions);
+        
         if (createGameRequest is null)
-        {
             return new BadRequestObjectResult(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
                 Title = "Invalid request body.",
                 Detail = "The request body could not be deserialized as a create game request."
             });
-        }
 
         var playerId = request.GetPlayerId();
         if (createGameRequest.CreatedBy.Id != playerId)
-        {
             return new BadRequestObjectResult(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
                 Title = "Player id mismatch.",
                 Detail = "The player id in the request body must match the player id from the request header."
             });
-        }
 
         var game = new GameInternal(
             createGameRequest.Id,
@@ -99,7 +96,9 @@ public class GameEndpoints(
     [OpenApiParameter("id", In = ParameterLocation.Path, Required = true, Type = typeof(Guid), Description = "Game id")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(GamePublic))]
     [OpenApiResponseWithBody(HttpStatusCode.NotFound, "application/json", typeof(ProblemDetails))]
-    public async Task<IActionResult> Get([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{id:guid}")] HttpRequest request, Guid id)
+    public async Task<IActionResult> Get(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{id:guid}")]
+        HttpRequest request, Guid id)
     {
         try
         {
