@@ -2,6 +2,7 @@ using api;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
+using Microsoft.Azure.SignalR.Management;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,18 @@ builder.Services.AddSingleton(serviceProvider =>
 
     return serviceProvider.GetRequiredService<CosmosClient>().GetContainer(databaseName, containerName);
 });
+
+builder.Services.AddSingleton<IServiceManager>(_ =>
+{
+    var connectionString = Environment.GetEnvironmentVariable("AZURE_SIGNALR_CONNECTION_STRING")
+        ?? throw new InvalidOperationException("Missing AZURE_SIGNALR_CONNECTION_STRING configuration.");
+
+    return (IServiceManager)new ServiceManagerBuilder()
+        .WithOptions(opt => opt.ConnectionString = connectionString)
+        .BuildServiceManager();
+});
+
+builder.Services.AddSingleton<ISignalRSender, SignalRSender>();
 
 builder.Logging.Services.Configure<LoggerFilterOptions>(options =>
 {

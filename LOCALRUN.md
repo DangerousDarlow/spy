@@ -3,24 +3,15 @@
 To run locally
 
 1. Run dependency containers
-2. Initialise local Cosmos DB
-3. Run api
-4. Run ui
+2. Run api
+3. Run ui
 
 ## Run dependency containers
 
-Run dependency docker containers using docker compose.
+Run dependency docker containers using docker compose. The `dev-init` container automatically initialises the Cosmos DB database and container on startup — no manual script step required.
 ```sh
 cd infra
 docker compose up
-```
-
-## Initialise local Cosmos DB
-
-Run node script to create database and container.
-```sh
-cd infra
-node cosmos-init-dev.ts
 ```
 
 ### Troubleshooting: OpenSSL "wrong version number"
@@ -32,6 +23,10 @@ For this Docker-based emulator setup, use:
 `AccountEndpoint=http://localhost:8081/`
 
 Using `https://localhost:8081/` will fail because the local emulator endpoint is exposed as HTTP in this environment.
+
+## SignalR
+
+There is no local emulator for Azure SignalR Service. Connect to the provisioned Azure SignalR instance instead. Set the `AzureSignalRConnectionString` in `api/local.settings.json` to the connection string from the `Settings > Keys` section of your SignalR Service in the Azure portal.
 
 ## Run api
 
