@@ -1,5 +1,8 @@
 using System.Net;
 using System.Text.Json;
+using api.Model.Common;
+using api.Model.Internal;
+using api.Model.Public;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
@@ -56,7 +59,7 @@ public class GameEndpoints(
             });
         }
 
-        var game = new Game(
+        var game = new GameInternal(
             createGameRequest.Id,
             createGameRequest.Name,
             GameState.PlayerRegistration,
@@ -81,6 +84,45 @@ public class GameEndpoints(
                 Status = (int)HttpStatusCode.Conflict,
                 Title = "Game already exists.",
                 Detail = $"A game with id '{createGameRequest.Id}' already exists."
+            });
+        }
+    }
+
+    [Function("Get")]
+    [OpenApiOperation("Get")]
+    [OpenApiParameter(
+        PlayerIdHttpRequestExtensions.PlayerIdHeaderName,
+        In = ParameterLocation.Header, Required = true,
+        Type = typeof(string),
+        Description = "Player UUID"
+    )]
+    [OpenApiParameter("id", In = ParameterLocation.Path, Required = true, Type = typeof(Guid), Description = "Game id")]
+    [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(GamePublic))]
+    [OpenApiResponseWithBody(HttpStatusCode.NotFound, "application/json", typeof(ProblemDetails))]
+    public async Task<IActionResult> Get([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{id:guid}")] HttpRequest request, Guid id)
+    {
+        try
+        {
+            var response = await gamesContainer.ReadItemAsync<GameInternal>(id.ToString(), new PartitionKey(id.ToString()));
+            var game = response.Resource;
+            var gamePublic = new GamePublic(
+                game.Id,
+                game.Name,
+                game.State,
+                game.CreatedAt,
+                game.CreatedBy.Name,
+                game.Products,
+                game.Players.Select(p => p.Name).ToArray()
+            );
+            return new OkObjectResult(gamePublic);
+        }
+        catch (CosmosException e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new NotFoundObjectResult(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.NotFound,
+                Title = "Game not found.",
+                Detail = $"A game with id '{id}' was not found."
             });
         }
     }

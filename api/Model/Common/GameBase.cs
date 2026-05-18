@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace api;
+namespace api.Model.Common;
 
-public record Game(
+public record GameBase(
     // Both JsonProperty and JsonPropertyName are needed because Microsoft.Azure.Cosmos uses Newtonsoft.Json not System.Text.Json
     [property: JsonProperty("id")]
     [property: JsonPropertyName("id")]
@@ -21,15 +21,7 @@ public record Game(
     [property: JsonPropertyName("createdAt")]
     DateTime CreatedAt,
     
-    [property: JsonProperty("createdBy")]
-    [property: JsonPropertyName("createdBy")]
-    Player CreatedBy,
-    
     [property: JsonProperty("products")]
     [property: JsonPropertyName("products")]
-    string[] Products,
-    
-    [property: JsonProperty("players")]
-    [property: JsonPropertyName("players")]
-    Player[] Players
+    string[] Products
 );

@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Converters;
 
-namespace api;
+namespace api.Model.Common;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
