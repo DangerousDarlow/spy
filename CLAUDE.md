@@ -1,9 +1,5 @@
 # Spy — Claude Code Guide
 
-## Project
-
-Asymmetric social deduction game. Built as a learning exercise for Azure Static Web Applications and managed Azure Functions.
-
 ## Repo layout
 
 ```
@@ -20,23 +16,9 @@ infra/    Azure Bicep + TypeScript deploy/provision scripts + docker-compose.yml
 - **OpenAPI:** `Microsoft.Azure.WebJobs.Extensions.OpenApi`
 - **JSON:** Both `System.Text.Json` and `Newtonsoft.Json` attributes are required on models — Cosmos SDK uses Newtonsoft, the Functions runtime uses STJ
 - **Player identity:** Passed via `Player-Id` header; enforced by `PlayerIdHeaderMiddleware` and `[RequirePlayerIdHeader]` attribute
-- **Environment variables:** `COSMOS_CONNECTION_STRING`, `COSMOS_DATABASE_NAME`, `COSMOS_GAMES_CONTAINER_NAME`
-- **Local dev:** `infra/docker-compose.yml` runs Azurite (blob/queue/table, ports 10000–10002) and the Cosmos DB Linux emulator (port 8081); API runs on `http://localhost:7245`
-
-### Domain model
-
-```csharp
-record Game(Guid Id, string Name, GameState State, DateTime CreatedAt, Guid CreatedBy, string[] Products, Guid[] Players)
-
-enum GameState { PlayerRegistration, GameStarted, GameOver }
-```
-
-### Endpoints
-
-| Function | Method | Path |
-|----------|--------|------|
-| Create   | POST   | /api/games (creates a game in Cosmos) |
-| Double   | POST   | /api/double (math demo endpoint) |
+- **Environment variables:** `COSMOS_CONNECTION_STRING`, `COSMOS_DATABASE_NAME`, `COSMOS_GAMES_CONTAINER_NAME`, `AZURE_SIGNALR_CONNECTION_STRING`
+- **Real-time messaging:** Azure SignalR Service via `Microsoft.Azure.SignalR.Management` (`IServiceManager`, serverless mode); hub `games`, groups named `game-{gameId}`; negotiate endpoint at `POST /api/signalr/negotiate`; inject `ISignalRSender` to push messages to a game group or individual player
+- **Local dev:** `infra/docker-compose.yml` runs Azurite (blob/queue/table, ports 10000–10002) and the Cosmos DB Linux emulator (port 8081); API runs on `http://localhost:7245`; SignalR has no local emulator — use a real Azure SignalR Service connection string (see `infra/README.md`)
 
 ## UI (`ui/`)
 
@@ -92,7 +74,7 @@ Key conventions:
 - **Local dev containers:** `docker-compose.yml` — Azurite + Cosmos DB emulator (vnext-preview)
 - **Provisioning:** `node provision.ts` — creates resource group if needed, validates and applies Bicep
 - **Deployment:** `node deploy.ts` — builds UI + API, gets SWA deployment token, deploys via Azure SWA CLI
-- **Resources:** Azure Static Web App, Cosmos DB account/database/container
+- **Resources:** Azure Static Web App, Cosmos DB account/database/container, Azure SignalR Service
 - **Naming convention:** `{name}-{environment}-swa`, `{name}-{environment}-cosmos`, etc.
 
 > Note: API and UI are coupled — they must be deployed together via the SWA CLI.

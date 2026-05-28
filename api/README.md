@@ -14,6 +14,39 @@ Set these values in `local.settings.json` or your environment:
 - `COSMOS_DATABASE_NAME`
 - `COSMOS_GAMES_CONTAINER_NAME`
 
+## SignalR configuration
+
+Set this value in `local.settings.json` or your environment:
+
+- `AZURE_SIGNALR_CONNECTION_STRING`
+
+The API uses `Microsoft.Azure.SignalR.Management` (`IServiceManager`) in serverless mode. There is no local emulator — local dev requires a real Azure SignalR Service connection string (see [`infra/README.md`](../infra/README.md#signalr-no-local-emulator)).
+
+### Hub and groups
+
+All real-time messaging uses the `games` hub. Players are organised into groups named `game-{gameId}`.
+
+### Endpoints
+
+| Function | Method | Path | Description |
+|----------|--------|------|-------------|
+| `SignalRNegotiate` | POST | `/api/signalr/negotiate` | Returns the SignalR endpoint URL and a JWT access token for the caller. Accepts an optional `gameId` query param — if provided, adds the player to the `game-{gameId}` group before responding. |
+
+Negotiate response body:
+
+```json
+{ "url": "<SignalR endpoint>", "accessToken": "<JWT>" }
+```
+
+### Sending messages
+
+`ISignalRSender` is registered as a singleton and injected into endpoints that need to push messages to clients:
+
+| Method | Target |
+|--------|--------|
+| `SendToGameAsync(gameId, method, payload)` | All players in the `game-{gameId}` group |
+| `SendToPlayerAsync(playerId, method, payload)` | A single player by their player ID (SignalR user ID) |
+
 ## Local Run
 
 To run locally see the [local run instructions](/LOCALRUN.md).

@@ -9,8 +9,11 @@ Azure resources are defined in `main.bicep` and provisioned via the Azure CLI. R
 - **Static Web App** — hosts the UI and managed Azure Functions (free tier)
 - **Cosmos DB account** — NoSQL database for game persistence (free tier)
 - **Cosmos DB database and container** — database named `{name}-{environment}-db` with a `games` container
+- **Azure SignalR Service** — real-time messaging for server→client push (free tier, serverless mode)
 
-Resources are tagged with environment and project, and follow the naming convention `{name}-{environment}-{suffix}` (e.g. `spy-dev-swa`, `spy-dev-cosmos`).
+Resources are tagged with environment and project, and follow the naming convention `{name}-{environment}-{suffix}` (e.g. `nd-spy-dev-swa`, `nd-spy-dev-cosmos`, `nd-spy-dev-signalr`).
+
+The SignalR Service runs in **Serverless** mode (required for Azure Functions integration) and its primary connection string is injected into the Static Web App's function app settings as `AZURE_SIGNALR_CONNECTION_STRING`.
 
 ## Scripts
 
@@ -58,6 +61,19 @@ The Cosmos container has persistence disabled (`AZURE_COSMOS_EMULATOR_ENABLE_DAT
 node cosmos-init-dev.ts
 node toxiproxy-init-dev.ts
 ```
+
+### SignalR (no local emulator)
+
+`docker-compose.yml` deliberately does **not** include a SignalR emulator. Local SignalR development connects to a real Azure SignalR Service instead (set `AZURE_SIGNALR_CONNECTION_STRING` in `api/local.settings.json`).
+
+The only published Azure SignalR emulator is [`klabbet/signalr-emulator`](https://hub.docker.com/r/klabbet/signalr-emulator), which wraps the `microsoft.azure.signalr.emulator` dotnet tool. That tool is frozen at `1.0.0-preview1-10809` (April 2022) and has never been updated.
+
+The problem is the data-plane REST API version:
+
+- The frozen emulator only implements the **legacy** `/api/v1/hubs/{hub}/...` REST routes.
+- Current `Microsoft.Azure.SignalR.Management` (1.30+) calls the **modern** `/api/hubs/{hub}/...?api-version=2022-06-01` scheme (with a `/:send` action segment for sends).
+
+The client connection / negotiate flow works against the emulator, but every server→client REST call — group management (e.g. `UserGroups.AddToGroupAsync`), broadcasts, sends — hits an unimplemented route and returns `404 Not Found`. The emulator's routes are compiled in, so this cannot be fixed via configuration. A path-rewriting reverse proxy in front of the emulator is feasible (the emulator validates the JWT signature/expiry but not the audience-vs-path, so tokens need no re-signing), but a real Azure SignalR resource was chosen for local dev as the lower-maintenance option.
 
 ### Toxiproxy
 
